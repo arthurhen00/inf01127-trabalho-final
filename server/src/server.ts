@@ -2,6 +2,7 @@ import fastify from 'fastify'
 import cors from '@fastify/cors'
 import jwt from '@fastify/jwt'
 import { usersRoutes } from './routes/users'
+import { propertiesRoutes } from './routes/properties'
 
 const app = fastify()
 
@@ -14,6 +15,7 @@ app.register(jwt, {
 })
 
 app.register(usersRoutes)
+app.register(propertiesRoutes)
 
 app.get('/', () => {
     return 'kkk rodou'

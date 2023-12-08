@@ -10,7 +10,7 @@ export default function Home() {
   const router = useRouter()
 
   async function handleRegister(event: FormEvent<HTMLFormElement>) {
-    //event.preventDefault()
+    event.preventDefault()
 
     const formData = new FormData(event.currentTarget)
 
@@ -18,15 +18,53 @@ export default function Home() {
       name: formData.get('username'),
       email: formData.get('email'),
       password: formData.get('password'),
+    }).then((response) => {
+      if (response.status >= 200 && response.status < 300) {
+        console.log('Registro bem-sucedido!', response.data);
+
+        const { token } = response.data
+        const cookieExpiresInSeconds = 60 * 60 * 24 * 30
+        document.cookie = `token=${token}; path=/; max-age=${cookieExpiresInSeconds}`;s
+
+        //router.push('/home')
+      } else {
+        console.error('Falha no registro. Código de status:', response.status);
+      }
     })
 
-    router.push('/')
+    router.push('/') // HERE
+  }
+
+  async function handleLogin(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+
+    const formData = new FormData(event.currentTarget)
+
+    await api.post('login', {
+      email: formData.get('email'),
+      password: formData.get('password'),
+    }).then((response) => {
+      if (response.status >= 200 && response.status < 300) {
+        console.log('Login bem-sucedido!', response.data);
+
+        const { token } = response.data
+        const cookieExpiresInSeconds = 60 * 60 * 24 * 30
+        document.cookie = `token=${token}; path=/; max-age=${cookieExpiresInSeconds}`;
+
+        //router.push('/home')
+      } else {
+        console.error('Falha no login. Código de status:', response.status);
+      }
+    })
+
+    router.push('/') // HERE
   }
 
   return (
       <main className="flex flex-row items-center justify-center min-h-screen bg-gray-300">
 
-        <div className="w-2/5 p-10">
+        {/** Grid esquerdo */}
+        <div className="w-2/5 p-2 ml-16">
           <span className="text-4xl leading-relaxed font-bold">Swipehome</span>
           <p>
             O Swipehome auxilia na divulgação e locação de propriedades, 
@@ -34,9 +72,13 @@ export default function Home() {
           </p>
         </div>
 
+        {/** Grid direito */}
         <div className="w-3/5 flex flex-col items-center justify-center flex-1 text-center">
-          <div className="bg-white rounded-2xl shadow-2xl flex w-5/6 max-w-4xl mb-3">
-            <form onSubmit={handleRegister} className="w-2/4 p-5">
+
+          {/** Access Box */}
+          <div className="bg-white rounded-2xl shadow-2xl flex w-5/6 max-w-4xl mb-3">  
+            {/** Login box */}
+            <form onSubmit={handleLogin} className="w-2/4 p-5">
               <div className="py-10">
                 <h2 className="text-3 font-bold mb-2">Entrar</h2>
                 <div className="border-2 w-20 border-gray-500 inline-block mb-2"></div>
@@ -58,6 +100,7 @@ export default function Home() {
               </div>
             </form>
 
+            {/** Register box */}
             <form onSubmit={handleRegister} className="w-2/4 p-5 bg-gray-100 rounded-tr-2xl rounded-br-2xl">
               <div className="py-10">
                 <h2 className="text-3 font-bold mb-2">Criar nova conta</h2>
@@ -82,8 +125,9 @@ export default function Home() {
                 </div>
               </div>
             </form>
-
           </div>
+
+          {/** Subline */}
           <p>
             <span className="font-bold">Anuncie sua propriedade</span> para uma celebridade, marca ou uma empresa.
           </p>
