@@ -24,15 +24,15 @@ export default function Home() {
 
         const { token } = response.data
         const cookieExpiresInSeconds = 60 * 60 * 24 * 30
-        document.cookie = `token=${token}; path=/; max-age=${cookieExpiresInSeconds}`;s
+        document.cookie = `token=${token}; path=/; max-age=${cookieExpiresInSeconds}`;
 
-        //router.push('/home')
+        router.push('/home')
       } else {
         console.error('Falha no registro. Código de status:', response.status);
       }
     })
 
-    router.push('/') // HERE
+    //router.push('/') // HERE
   }
 
   async function handleLogin(event: FormEvent<HTMLFormElement>) {
@@ -51,13 +51,13 @@ export default function Home() {
         const cookieExpiresInSeconds = 60 * 60 * 24 * 30
         document.cookie = `token=${token}; path=/; max-age=${cookieExpiresInSeconds}`;
 
-        //router.push('/home')
+        router.push('/home')
       } else {
         console.error('Falha no login. Código de status:', response.status);
       }
     })
 
-    router.push('/') // HERE
+    //router.push('/') // HERE
   }
 
   return (
