@@ -25,4 +25,12 @@ model Property {
   createdAt   DateTime @default(now())
   userId      String
   user        User     @relation(fields: [userId], references: [id])
+  images      Image[]
+}
+
+model Image {
+  id         String   @id @default(uuid())
+  imageUrl   String
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id])
 }
