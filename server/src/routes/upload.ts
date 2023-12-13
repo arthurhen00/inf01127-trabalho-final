@@ -77,7 +77,10 @@ export async function uploadRoutes(app: FastifyInstance) {
         const image = await prisma.image.findMany({
             where: {
                 propertyId: id,
-            }
+            },
+            select: {
+                imageUrl: true,
+            },
         })
 
         return image
