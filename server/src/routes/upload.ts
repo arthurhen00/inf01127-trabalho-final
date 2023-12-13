@@ -4,11 +4,14 @@ import { FastifyInstance } from 'fastify'
 import { createWriteStream } from 'node:fs'
 import { pipeline } from 'node:stream'
 import { promisify } from 'node:util'
+import { z } from 'zod'
+import { prisma } from '../lib/prisma'
 
 const pump = promisify(pipeline)
 
 export async function uploadRoutes(app: FastifyInstance) {
     
+    // Upload de imagem
     app.post('/upload', async (request, reply) => {
         const upload = await request.file({
             limits: {
@@ -42,6 +45,42 @@ export async function uploadRoutes(app: FastifyInstance) {
         const fileUrl = new URL(`/uploads/${filename}`, fullUrl).toString()
 
         return { fileUrl }
+    })
+
+    // Relaciona imagem -> propriedade
+    app.post('/images', async (request) => {
+        const bodySchema = z.object({
+            imageUrl: z.string(),
+            propertyId: z.string(),
+        })
+
+        const { imageUrl, propertyId } = bodySchema.parse(request.body)
+        
+        const image = await prisma.image.create({
+            data: {
+                imageUrl,
+                propertyId,
+            },
+        })
+
+        return image
+    })
+
+    // Imagens de uma propriedade
+    app.get('/images/:id', async (request) => {
+        const paramsSchema = z.object({
+            id: z.string().uuid(),
+        })
+
+        const { id } = paramsSchema.parse(request.params)
+
+        const image = await prisma.image.findMany({
+            where: {
+                propertyId: id,
+            }
+        })
+
+        return image
     })
  
 }
