@@ -2,6 +2,7 @@ import { cookies } from 'next/headers'
 import { getUser } from '@/lib/auth'
 
 import Header from '@/components/Header'
+import AddPropertyForm from '@/components/AddPropertyForm'
  
 export default function Home() {
   const isAuthenticated = cookies().has('token')
@@ -20,7 +21,7 @@ export default function Home() {
         </div>
 
         <main className='bg-gray-100 px-24'>
-          main content here
+          <AddPropertyForm />
         </main>
       </>
   )

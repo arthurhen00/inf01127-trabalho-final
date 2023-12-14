@@ -45,14 +45,13 @@ export async function propertiesRoutes(app: FastifyInstance) {
     
     // Criação
     app.post('/properties', async (request, reply) => {
-        
         const bodySchema = z.object({
-            Nome : z.string(),
-            CEP: z.number().max(99999999),
-            Descrição: z.string(),
-            Endereço: z.string(),
+            name : z.string(),
+            cep: z.string(),
+            description: z.string(),
+            address: z.string(),
         })
-
+        
         const form = bodySchema.safeParse(request.body)
 
         if (!form.success) {
@@ -60,27 +59,22 @@ export async function propertiesRoutes(app: FastifyInstance) {
           
             return reply.status(400).send({
               error: { message: "Invalid request", errors },
-            });
-          }
-        
-        const { Nome: name, CEP: zipcode, Descrição: description, Endereço: address } = form.data;
-        
+            })
+        }
+
+        const { name, cep, description, address } = form.data;
+
         const property = await prisma.property.create({
             data: {
-                name: name,
-                zipcode: zipcode,
-                description:description,
-                address: address,
+                name,
+                zipcode: cep,
+                description,
+                address,
                 userId: request.user.sub,
             },
         })
-        console.log(property)
-        console.log(name,zipcode,description)
 
-        console.log(request.user.sub)
-
-
-        return {status : 201}
+        return property
     })
     
     // Atualização
@@ -92,11 +86,11 @@ export async function propertiesRoutes(app: FastifyInstance) {
         const { id } = paramsSchema.parse(request.params)
 
         const bodySchema = z.object({
-            cep: z.string(),
+            zipcode: z.string(),
             description: z.string(),
         })
 
-        const { cep, description } = bodySchema.parse(request.body)
+        const { zipcode, description } = bodySchema.parse(request.body)
 
         let property = await prisma.property.findUniqueOrThrow({
             where: {
@@ -113,7 +107,7 @@ export async function propertiesRoutes(app: FastifyInstance) {
                 id,
             },
             data: {
-                cep,
+                zipcode,
                 description,
             },
         })
