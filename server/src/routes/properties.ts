@@ -1,7 +1,6 @@
 import { FastifyInstance } from 'fastify'
 import { z } from 'zod'
 import { prisma } from '../lib/prisma'
-import { request } from 'http'
 
 export async function propertiesRoutes(app: FastifyInstance) {
     app.addHook('preHandler', async (request) => {
@@ -45,23 +44,43 @@ export async function propertiesRoutes(app: FastifyInstance) {
     })
     
     // Criação
-    app.post('/properties', async (request) => {
+    app.post('/properties', async (request, reply) => {
+        
         const bodySchema = z.object({
-            cep: z.string(),
-            description: z.string(),
+            Nome : z.string(),
+            CEP: z.number().max(99999999),
+            Descrição: z.string(),
+            Endereço: z.string(),
         })
 
-        const { cep, description } = bodySchema.parse(request.body)
+        const form = bodySchema.safeParse(request.body)
+
+        if (!form.success) {
+            const { errors } = form.error;
+          
+            return reply.status(400).send({
+              error: { message: "Invalid request", errors },
+            });
+          }
+        
+        const { Nome: name, CEP: zipcode, Descrição: description, Endereço: address } = form.data;
         
         const property = await prisma.property.create({
             data: {
-                cep,
-                description,
+                name: name,
+                zipcode: zipcode,
+                description:description,
+                address: address,
                 userId: request.user.sub,
             },
         })
+        console.log(property)
+        console.log(name,zipcode,description)
 
-        return property
+        console.log(request.user.sub)
+
+
+        return {status : 201}
     })
     
     // Atualização

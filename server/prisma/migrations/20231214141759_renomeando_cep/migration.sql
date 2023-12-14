@@ -1,0 +1,1 @@
+ALTER TABLE "property" RENAME COLUMN "cep" TO "zipcode";
