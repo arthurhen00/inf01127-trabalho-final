@@ -11,7 +11,7 @@ export default function Home() {
 
   return (
       <>        
-        <Header userName={name}/>
+        <Header />
         {/** Menu */}
         <div className='flex px-24 py-2 justify-center bg-gray-100 '>
             <a href='' className='px-6 py-2 border-b-2 border-gray-100 hover:border-gray-200'>Perfil</a>
