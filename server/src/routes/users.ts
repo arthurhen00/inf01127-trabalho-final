@@ -16,11 +16,12 @@ export async function usersRoutes(app: FastifyInstance) {
     app.post('/register', async (request) => {
         const userSchema = z.object({
             name: z.string(),
+            cpf: z.string(),
             email: z.string(),
             password: z.string(),
         })
 
-        const { name, email, password } = userSchema.parse(request.body)
+        const { name, cpf, email, password } = userSchema.parse(request.body)
         
         let user = await prisma.user.findUnique({
             where: {
@@ -32,6 +33,7 @@ export async function usersRoutes(app: FastifyInstance) {
             user = await prisma.user.create({
                 data: {
                     name,
+                    cpf,
                     email,
                     password,
                 },
@@ -84,19 +86,5 @@ export async function usersRoutes(app: FastifyInstance) {
         } else {
             return reply.status(401).send();
         }
-    })
-
-    app.get('/teste', async (request) => {
-        await request.jwtVerify()
-
-        const teste = await prisma.user.findMany({
-            where: {
-                email: request.user.email,
-            },
-        })
-
-        return teste
-    })
-    
-    
+    })   
 }

@@ -3,8 +3,9 @@
 import { api } from "@/lib/api"
 import { useRouter } from "next/navigation"
 import { FormEvent } from "react"
-import { FaRegEnvelope, FaRegUser } from "react-icons/fa"
+import { FaRegAddressCard, FaRegEnvelope, FaRegUser } from "react-icons/fa"
 import { MdLockOutline } from "react-icons/md"
+import { IMaskInput } from "react-imask"
 
 export default function Home() {
   const router = useRouter()
@@ -16,6 +17,7 @@ export default function Home() {
 
     await api.post('/register', {
       name: formData.get('username'),
+      cpf: formData.get('cpf'),
       email: formData.get('email'),
       password: formData.get('password'),
     }).then((response) => {
@@ -108,7 +110,17 @@ export default function Home() {
                 <div className="flex flex-col items-center">
                   <div className="bg-white w-64 p-2 flex items-center mb-3 rounded-xl">
                     <FaRegUser className="text-gray-400 mr-2" />
-                    <input type="username" name="username" placeholder="Nome" className="bg-white outline-none text-sm flex-1"></input>
+                    <input type="text" name="username" placeholder="Nome" className="bg-white outline-none text-sm flex-1"></input>
+                  </div>
+                  <div className="bg-white w-64 p-2 flex items-center mb-3 rounded-xl">
+                    <FaRegAddressCard className="text-gray-400 mr-2"/>
+                    <IMaskInput
+                      mask="000.000.000-00"
+                      placeholder="Digite o seu CPF"
+                      className="bg-white outline-none text-sm flex-1"
+                      name="cpf"
+                    />
+                    {/*<input type="number" name="cpf" placeholder="CPF" className="bg-white outline-none text-sm flex-1"></input>*/}
                   </div>
                   <div className="bg-white w-64 p-2 flex items-center mb-3 rounded-xl">
                     <FaRegEnvelope className="text-gray-400 mr-2" />
