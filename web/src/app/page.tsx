@@ -18,6 +18,15 @@ export default function Home() {
 
     const formData = new FormData(event.currentTarget)
 
+    // eslint-disable-next-line
+    if (formData.get('cpf').length < 14 || // sem problemas
+        !formData.get('username') ||
+        !formData.get('email') ||
+        !formData.get('password')) {
+          Alert('Preencha todos os campos!')
+          return
+    }
+
     try {
       await api.post('/register', {
         name: formData.get('username'),
