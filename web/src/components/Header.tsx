@@ -3,7 +3,6 @@ import { PiHouseLineBold } from "react-icons/pi";
 import { RxExit } from "react-icons/rx";
 import { FaRegUser } from 'react-icons/fa';
 import { getUser } from "@/lib/auth";
-import { name } from "tailwindcss";
 
 export default function Header() {
   
