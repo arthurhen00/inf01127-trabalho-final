@@ -74,8 +74,8 @@ export default function AddPropertyForm () {
                 <h1 className=''>Adicionar propriedade</h1>
             </div>
 
-            {/** Esq */}
             <div className='flex'>               
+                {/** Esq */}
                 <div> 
                     <div>
                         <div className="bg-white w-64 p-2 flex items-center mb-3 rounded-xl">

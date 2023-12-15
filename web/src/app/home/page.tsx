@@ -10,7 +10,7 @@ export default function Home() {
   const { name, email } = getUser()
 
   return (
-      <>        
+      <div className='flex flex-col h-screen bg-gray-100'>        
         <Header />
         {/** Menu */}
         <div className='flex px-24 py-2 justify-center bg-gray-100 '>
@@ -23,6 +23,6 @@ export default function Home() {
         <main className='bg-gray-100 px-24'>
           <AddPropertyForm />
         </main>
-      </>
+      </div>
   )
 }
