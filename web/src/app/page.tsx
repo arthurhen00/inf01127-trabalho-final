@@ -6,6 +6,9 @@ import { FormEvent } from "react"
 import { FaRegAddressCard, FaRegEnvelope, FaRegUser } from "react-icons/fa"
 import { MdLockOutline } from "react-icons/md"
 import { IMaskInput } from "react-imask"
+import Alert from "@/components/Alert"
+import { ToastContainer } from "react-toastify"
+
 
 export default function Home() {
   const router = useRouter()
@@ -15,26 +18,27 @@ export default function Home() {
 
     const formData = new FormData(event.currentTarget)
 
-    await api.post('/register', {
-      name: formData.get('username'),
-      cpf: formData.get('cpf'),
-      email: formData.get('email'),
-      password: formData.get('password'),
-    }).then((response) => {
-      if (response.status >= 200 && response.status < 300) {
-        console.log('Registro bem-sucedido!', response.data);
+    try {
+      await api.post('/register', {
+        name: formData.get('username'),
+        cpf: formData.get('cpf'),
+        email: formData.get('email'),
+        password: formData.get('password'),
+      }).then((response) => {
+        if (response.status >= 200 && response.status < 300) {
+          console.log('Registro bem-sucedido!', response.data);
 
-        const { token } = response.data
-        const cookieExpiresInSeconds = 60 * 60 * 24 * 30
-        document.cookie = `token=${token}; path=/; max-age=${cookieExpiresInSeconds}`;
+          const { token } = response.data
+          const cookieExpiresInSeconds = 60 * 60 * 24 * 30
+          document.cookie = `token=${token}; path=/; max-age=${cookieExpiresInSeconds}`;
 
-        router.push('/home')
-      } else {
-        console.error('Falha no registro. Código de status:', response.status);
-      }
-    })
+          router.push('/home')
+        }
+      })
+    } catch (error) {
+      Alert('Email ou CPF já em uso')
+    }
 
-    //router.push('/') // HERE
   }
 
   async function handleLogin(event: FormEvent<HTMLFormElement>) {
@@ -42,29 +46,29 @@ export default function Home() {
 
     const formData = new FormData(event.currentTarget)
 
-    await api.post('login', {
-      email: formData.get('email'),
-      password: formData.get('password'),
-    }).then((response) => {
-      if (response.status >= 200 && response.status < 300) {
-        console.log('Login bem-sucedido!', response.data);
+    try{
+      await api.post('login', {
+        email: formData.get('email'),
+        password: formData.get('password'),
+      }).then((response) => {
+        if (response.status >= 200 && response.status < 300) {
+          console.log('Login bem-sucedido!', response.data);
 
-        const { token } = response.data
-        const cookieExpiresInSeconds = 60 * 60 * 24 * 30
-        document.cookie = `token=${token}; path=/; max-age=${cookieExpiresInSeconds}`;
+          const { token } = response.data
+          const cookieExpiresInSeconds = 60 * 60 * 24 * 30
+          document.cookie = `token=${token}; path=/; max-age=${cookieExpiresInSeconds}`;
 
-        router.push('/home')
-      } else {
-        console.error('Falha no login. Código de status:', response.status);
-      }
-    })
-
-    //router.push('/') // HERE
+          router.push('/home')
+        }
+      })
+    } catch (error) {
+      Alert('Login ou senha inválidos')
+    }
   }
 
   return (
       <main className="flex flex-row items-center justify-center min-h-screen bg-gray-300">
-
+        <ToastContainer />
         {/** Grid esquerdo */}
         <div className="w-2/5 p-2 ml-16">
           <span className="text-4xl leading-relaxed font-bold">Swipehome</span>

@@ -13,7 +13,7 @@ export async function usersRoutes(app: FastifyInstance) {
         return users
     })
     
-    app.post('/register', async (request) => {
+    app.post('/register', async (request, reply) => {
         const userSchema = z.object({
             name: z.string(),
             cpf: z.string(),
@@ -28,6 +28,20 @@ export async function usersRoutes(app: FastifyInstance) {
                 email: email,
             },
         })
+
+        if (user) {
+            return reply.status(401).send();
+        }
+
+        user = await prisma.user.findUnique({
+            where: {
+                cpf: cpf,
+            },
+        })
+
+        if (user) {
+            return reply.status(401).send();
+        }
         
         if (!user) {
             user = await prisma.user.create({
