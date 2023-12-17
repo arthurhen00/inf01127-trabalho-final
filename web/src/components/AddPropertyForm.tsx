@@ -7,7 +7,6 @@ import { FaRegEnvelope } from 'react-icons/fa';
 import Cookie from 'js-cookie'
 import { api } from '@/lib/api';
 
-
 export default function AddPropertyForm () {
     const router = useRouter()
 
@@ -51,6 +50,8 @@ export default function AddPropertyForm () {
 
             })
         }
+
+        router.push('/home')
     }
 
     const [previews, setPreviews] = useState<string[]>([]);
