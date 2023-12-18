@@ -4,17 +4,63 @@ import { useRouter } from "next/navigation"
 import { Camera } from 'lucide-react';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { FaRegEnvelope } from 'react-icons/fa';
+import {toast} from 'react-toastify'
 import Cookie from 'js-cookie'
 import { api } from '@/lib/api';
+import { IMaskInput } from "react-imask";
+
 
 export default function AddPropertyForm () {
     const router = useRouter()
 
+    const [previews, setPreviews] = useState<string[]>([]);
+
+    function validateForm(formData: FormData){
+        const name = formData.get('name')
+        const address = formData.get('address')
+        const cep = formData.get('cep')
+        const description = formData.get('description')
+
+        console.log('name:' + name)
+        console.log('address:' + address)
+        console.log('cep:' + cep)
+        console.log('description:' + description)
+
+        let valid = true
+        if (!name || name.toString().trim().length === 0) {
+            toast.error('É necessário adicionar um nome!');
+            valid = false
+        }
+        if (!address || address.toString().trim().length === 0) {
+            toast.error('É necessário adicionar um endereço!');
+            valid = false
+        }
+        if (!cep || cep.toString().trim().length === 0) {
+            toast.error('É necessário adicionar um CEP!');
+            valid = false
+        }
+        if (!description || description.toString().trim().length === 0) {
+            toast.error('É necessário adicionar uma descrição!');
+            valid = false
+        }
+
+        if(previews.length === 0){
+            toast.error('É necessário adicionar uma imagem!')
+            valid = false
+        }
+
+        return valid
+    }
+
     async function handleProperty(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
-
+        
         const formData = new FormData(event.currentTarget)
 
+        const valid = validateForm(formData);
+        if(!valid){
+            return
+        }
         // Registro da propriedade
         const token = Cookie.get('token')
 
@@ -52,9 +98,11 @@ export default function AddPropertyForm () {
         }
 
         router.push('/home')
+
+        
     }
 
-    const [previews, setPreviews] = useState<string[]>([]);
+    
 
     function onImageSelected(event: ChangeEvent<HTMLInputElement>) {
         const { files } = event.target
@@ -85,7 +133,12 @@ export default function AddPropertyForm () {
                         </div>
                         <div className="bg-white w-64 p-2 flex items-center mb-3 rounded-xl">
                             <FaRegEnvelope className="text-gray-400 mr-2" />
-                            <input type="cep" name="cep" placeholder="CEP" className="bg-white outline-none text-sm flex-1"></input>
+                            <IMaskInput
+                                mask="00000-000"
+                                placeholder="CEP"
+                                className="bg-white outline-none text-sm flex-1"
+                                name="cep"
+                            />
                         </div>
                         <div className="bg-white w-64 p-2 flex items-center mb-3 rounded-xl">
                             <FaRegEnvelope className="text-gray-400 mr-2" />
