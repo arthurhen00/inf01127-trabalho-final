@@ -23,28 +23,8 @@ export async function usersRoutes(app: FastifyInstance) {
 
         const { name, cpf, email, password } = userSchema.parse(request.body)
         
-        let user = await prisma.user.findUnique({
-            where: {
-                email: email,
-            },
-        })
-
-        if (user) {
-            return reply.status(401).send();
-        }
-
-        user = await prisma.user.findUnique({
-            where: {
-                cpf: cpf,
-            },
-        })
-
-        if (user) {
-            return reply.status(401).send();
-        }
-        
-        if (!user) {
-            user = await prisma.user.create({
+        try{
+            const user = await prisma.user.create({
                 data: {
                     name,
                     cpf,
@@ -52,20 +32,24 @@ export async function usersRoutes(app: FastifyInstance) {
                     password,
                 },
             })
+
+            // identificacao do usuario
+            const token = app.jwt.sign({
+                name: name,
+                email: email,
+            }, {
+                sub: user.id,
+                expiresIn: '30 days',
+            })
+
+            return {
+                token,
+            }
+        } catch(e){
+            return reply.status(409).send();
         }
         
-        // identificacao do usuario
-        const token = app.jwt.sign({
-            name: name,
-            email: email,
-        }, {
-            sub: user.id,
-            expiresIn: '30 days',
-        })
-
-        return {
-            token,
-        }
+        
     })
 
     app.post('/login', async (request, reply) => {
