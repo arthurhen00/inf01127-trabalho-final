@@ -8,6 +8,7 @@ import { MdLockOutline } from "react-icons/md"
 import { IMaskInput } from "react-imask"
 import Alert from "@/components/Alert"
 import { ToastContainer } from "react-toastify"
+import { validate } from 'gerador-validador-cpf'
 
 
 export default function Home() {
@@ -26,6 +27,12 @@ export default function Home() {
           Alert('Preencha todos os campos!')
           return
     }
+
+    if (!validate(formData.get('cpf'))) {
+      Alert('CPF inválido!')
+      return
+    }
+
 
     try {
       await api.post('/register', {
