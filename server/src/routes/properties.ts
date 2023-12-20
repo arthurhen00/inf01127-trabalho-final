@@ -48,28 +48,49 @@ export async function propertiesRoutes(app: FastifyInstance) {
         const bodySchema = z.object({
             name : z.string(),
             cep: z.string(),
-            description: z.string(),
+            state: z.string(),
+            city: z.string(),
             address: z.string(),
+            price: z.number(),
+            description: z.string(),
+            propertyType: z.string(),
+            propertyNumber: z.number(),
+            numBedroom: z.number(),
+            numBathroom: z.number(),
         })
         
+        console.log(request.body)
         const form = bodySchema.safeParse(request.body)
-
+        console.log(form)
+        
         if (!form.success) {
             const { errors } = form.error;
-          
+
+            console.log(errors)
+            
             return reply.status(400).send({
-              error: { message: "Invalid request", errors },
+                error: { message: "Invalid request", errors },
             })
         }
+        console.log('3')
 
-        const { name, cep, description, address } = form.data;
+        const { name, cep, state, city, 
+                address, price, description, propertyType,
+                propertyNumber, numBedroom, numBathroom } = form.data;
 
         const property = await prisma.property.create({
             data: {
                 name,
                 zipcode: cep,
-                description,
+                state,
+                city,
                 address,
+                price,
+                description,
+                propertyType,
+                propertyNumber,
+                numBedroom,
+                numBathroom,
                 userId: request.user.sub,
             },
         })

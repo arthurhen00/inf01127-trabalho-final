@@ -17,15 +17,22 @@ model User {
 }
 
 model Property {
-  id          String   @id @default(uuid())
-  name        String
-  zipcode     String
-  description String
-  address     String
-  createdAt   DateTime @default(now())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
-  images      Image[]
+  id             String   @id @default(uuid())
+  name           String
+  zipcode        String
+  state          String
+  city           String
+  address        String
+  price          Float
+  propertyType   String
+  propertyNumber Int
+  numBedroom     Int
+  numBathroom    Int
+  description    String
+  createdAt      DateTime @default(now())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id])
+  images         Image[]
 }
 
 model Image {
