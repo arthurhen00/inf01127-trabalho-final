@@ -1,19 +1,11 @@
 import Header from '@/components/Header'
 import ListProperty from '@/components/ListProperty';
 import Menu from '@/components/Menu'
-import { api } from '@/lib/api';
-import { useEffect } from 'react';
 
 export default function MyPropertiesPage() {
 
-  async function handleProperties() {
-      const properties = await api.get('/properties')
-      
-      console.log(properties)
-  }
-
   return(
-  <div className='flex flex-col h-screen bg-gray-100'>
+    <div className='flex flex-col h-screen bg-gray-100'>
       <Header />
       <Menu />
 

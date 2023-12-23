@@ -41,10 +41,10 @@ export default async function ListProperty() {
 
     const properties = await Promise.all(
         propertiesData.map(async (property) => {
-          const imageResponse = await api.get(`/images/${property.id}`);
-          const images = imageResponse.data;
+          const imageResponse = await api.get(`/images/${property.id}`)
+          const images = imageResponse.data
     
-          return { property, images };
+          return { property, images }
         })
     )
 
@@ -68,15 +68,15 @@ export default async function ListProperty() {
                             </div>
                         </div>
                         <div className='flex flex-row text-sm text-black'>
-                            <a href='' className='mr-2 flex hover:text-gray-500 items-center'>
-                                <CiSearch className='' />
+                            <a href={`/my-properties/details/${property.property.id}`} className='mr-2 flex hover:text-gray-500 items-center'>
+                                <CiSearch />
                                 Detalhes
                             </a>
-                            <a href='' className='mr-2 flex hover:text-gray-500 items-center'>
+                            <a href={`/my-properties/edit/${property.property.id}`} className='mr-2 flex hover:text-gray-500 items-center'>
                                 <CiEdit />
                                 Editar
                             </a>
-                            <a href='' className='flex hover:text-red-500 items-center'>
+                            <a href={`/my-properties/delete/${property.property.id}`} className='flex hover:text-red-500 items-center'>
                                 <MdDeleteOutline />
                                 Excluir
                             </a>
