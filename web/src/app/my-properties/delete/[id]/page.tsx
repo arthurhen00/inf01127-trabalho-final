@@ -1,7 +1,11 @@
 import Header from "@/components/Header";
 import Menu from "@/components/Menu";
+import { GetServerSidePropsContext } from "next";
 
-export default function PropertyDelete() {
+export default function PropertyDelete(context: GetServerSidePropsContext) {
+
+    const propertyId = context.params?.id
+
     return(
         <div className='flex flex-col h-screen bg-gray-100'>
           <Header />
