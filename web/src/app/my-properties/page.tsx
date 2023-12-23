@@ -9,9 +9,9 @@ export default function MyPropertiesPage() {
       <Header />
       <Menu />
 
-      <main className='bg-gray-100 px-24 flex'>
+      <main className='bg-gray-100 px-24 flex flex-col'>
+        <h1 className='text-2xl'>Meus imóveis</h1>
         <ListProperty />
-        <div className='bg-green-200 w-2/3 py-4'>edit painel</div>
       </main>
     </div>
   )

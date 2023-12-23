@@ -49,11 +49,15 @@ export default async function ListProperty() {
     )
 
     return(
-        <div className='w-1/3 mr-4'>
+        <div className='mr-4 flex flex-1 justify-center flex-wrap'>
             {properties.map(property => {
                 return (
-                    <div key={property.property.id} className='py-4'>
-                        <Image src={property.images[0].imageUrl} width={800} height={300} alt='' className='rounded-lg object-cover' />
+                    <div key={property.property.id} className='py-4 m-2'>
+                        <img
+                            src={property.images[0].imageUrl}
+                            alt=''
+                            className='h-[280px] w-[420px] rounded-lg object-cover'
+                        />
                         <span className='flex items-center text-black text-2xl'>{property.property.name}</span>
                         <div className='flex flex-row items-center text-sm text-black justify-between'>
                             <div>
