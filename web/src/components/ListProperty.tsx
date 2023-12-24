@@ -80,7 +80,7 @@ export default async function ListProperty() {
                                 <CiEdit />
                                 Editar
                             </a>
-                            <a href={`/my-properties/delete/${property.property.id}`} className='flex hover:text-red-500 items-center'>
+                            <a href={`/my-properties/delete/${property.property.id}`} className='flex hover:text-red-600 items-center'>
                                 <MdDeleteOutline />
                                 Excluir
                             </a>
