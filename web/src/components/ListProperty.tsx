@@ -41,7 +41,11 @@ export default async function ListProperty() {
 
     const properties = await Promise.all(
         propertiesData.map(async (property) => {
-          const imageResponse = await api.get(`/images/${property.id}`)
+          const imageResponse = await api.get(`/images/${property.id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+          })
           const images = imageResponse.data
     
           return { property, images }

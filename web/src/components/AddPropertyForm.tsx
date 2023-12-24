@@ -115,6 +115,10 @@ export default function AddPropertyForm () {
                 await api.post('/images', {
                     imageUrl:  imageUrl,
                     propertyId: propertyId,
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
                 })
 
             })

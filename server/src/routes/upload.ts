@@ -54,6 +54,8 @@ export async function uploadRoutes(app: FastifyInstance) {
 
     // Relaciona imagem -> propriedade
     app.post('/images', async (request) => {
+        await request.jwtVerify()
+
         const bodySchema = z.object({
             imageUrl: z.string(),
             propertyId: z.string(),
@@ -73,6 +75,8 @@ export async function uploadRoutes(app: FastifyInstance) {
 
     // Imagens de uma propriedade
     app.get('/images/:id', async (request) => {
+        await request.jwtVerify()
+
         const paramsSchema = z.object({
             id: z.string().uuid(),
         })
@@ -93,6 +97,8 @@ export async function uploadRoutes(app: FastifyInstance) {
 
     // Delete Imagens de uma propriedade
     app.delete('/images/:id', async (request) => {
+        await request.jwtVerify()
+
         const paramsSchema = z.object({
             id: z.string().uuid(),
         })

@@ -38,7 +38,11 @@ export default async function PropertyDelete(context: GetServerSidePropsContext)
 
   const propertiesData : Property = propertyResponse.data
 
-  const imageResponse = await api.get(`/images/${propertyId}`)
+  const imageResponse = await api.get(`/images/${propertyId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
   const images = imageResponse.data
 
   const property = { propertiesData, images }

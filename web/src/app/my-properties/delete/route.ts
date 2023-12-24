@@ -9,9 +9,13 @@ export async function GET(request: NextRequest) {
     const { query } = parse(request.url, true)
     const id = query?.id
 
-    const imageResponse = await api.delete(`/images/${id}`)
-
     const token = cookies().get('token')?.value
+
+    const imageResponse = await api.delete(`/images/${id}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
 
     const response = await api.delete(`/properties/${id}`, {
         headers: {
