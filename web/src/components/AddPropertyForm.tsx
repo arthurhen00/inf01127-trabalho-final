@@ -58,6 +58,10 @@ export default function AddPropertyForm () {
             toast.error('É necessário adicionar uma descrição!');
             valid = false
         }
+        if (!state || state.toString().trim().length === 0) {
+            toast.error('É necessário adicionar um CEP!');
+            valid = false
+        }
         
 
         if(previews.length === 0){
@@ -130,7 +134,6 @@ export default function AddPropertyForm () {
     function onImageSelected(event: ChangeEvent<HTMLInputElement>) {
         const { files } = event.target
 
-
         if (!files || files.length > 5) {
             return
         }
@@ -142,14 +145,17 @@ export default function AddPropertyForm () {
 
     async function pickUpCEP(event: ChangeEvent<HTMLInputElement>) {
         const cep = event.target.value
-
-        if (!cep) {
-            return
-        }
         
         const stateInput = document.querySelector<HTMLInputElement>('input[name="state"]')!
         const cityInput = document.querySelector<HTMLInputElement>('input[name="city"]')!
         const streetInput = document.querySelector<HTMLInputElement>('input[name="address"]')!
+
+        if (!cep) {
+            stateInput.value = ''
+            cityInput.value = ''
+            streetInput.value = ''
+            return
+        }
 
         try {
             const response = await axios.get(`http://viacep.com.br/ws/${cep}/json/`)
@@ -165,6 +171,9 @@ export default function AddPropertyForm () {
             }
         } catch (erro) {
             console.log(erro)
+            stateInput.value = ''
+            cityInput.value = ''
+            streetInput.value = ''
             Alert('Erro ao obter informações do CEP.')
         }
     }

@@ -14,7 +14,7 @@ export default function PropertyEdit(context: GetServerSidePropsContext) {
       <Header />
       <Menu />
 
-      <main className='bg-gray-100 px-24 flex'>
+      <main className='bg-gray-100 px-24'>
         <EditPropertyForm propertyId={propertyId} token={token} />
       </main>
     </div>
