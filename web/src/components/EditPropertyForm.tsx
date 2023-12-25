@@ -2,33 +2,52 @@
 
 import { api } from "@/lib/api"
 import { Camera, Image } from "lucide-react"
-import { ChangeEvent, useEffect, useState } from "react"
+import { ChangeEvent, FormEvent, useEffect, useState } from "react"
 import { FaRegEnvelope } from "react-icons/fa"
 import { IMaskInput } from "react-imask"
 import Alert from "./Alert"
 import axios from "axios"
-import { ToastContainer } from "react-toastify"
+import { ToastContainer, toast } from "react-toastify"
+import { TiDelete } from "react-icons/ti"
+import Cookie from 'js-cookie'
+import { useRouter } from "next/navigation"
 
 export default function EditPropertyForm(props : { propertyId: string | string[] | undefined, token: string | undefined }) {
+    const router = useRouter()
 
     const [property, setProperty] = useState<any>(null)
     const [previews, setPreviews] = useState<string[]>([])
+    
+    const [toRemove, setToRemove] = useState<string[]>([])
 
+    
     useEffect(() => {
         const property = handlePropertyForm()
-
+        
         // ?
         property.then((res) => {
             setProperty(res)
-
-            const previewsObj = res.imageData
-            const previews = previewsObj.map((preview: { imageUrl: string })  => preview.imageUrl)
-
-            setPreviews(previews)
         })
 
     }, [])
 
+    // Cria lista com imagens para remover, atualiza estrutura property
+    function handleRemoveImage(imageObj : {imageUrl : string, imageId: string}) {
+        const images = property.imageData
+        const imageToRemove = imageObj
+
+        const imageData = images.filter((obj : {imageUrl: string}) => obj !== imageToRemove)
+        const propertyData = property.propertyData
+
+        const newProperty = {propertyData, imageData}
+
+        setProperty(newProperty)
+
+        const imageToRemoveId = imageToRemove.imageId
+        setToRemove((prevToRemove) => [...prevToRemove, imageToRemoveId])
+    }
+
+    // Recebe as informacoes do formulario
     async function handlePropertyForm() {
         const propertyResponse = await api.get(`/properties/${props.propertyId}`, {
             headers: {
@@ -47,6 +66,137 @@ export default function EditPropertyForm(props : { propertyId: string | string[]
         const property = { propertyData, imageData }
 
         return property
+    }
+
+    function validateForm(formData: FormData){
+        const name = formData.get('name')
+        const cep = formData.get('cep')
+        const state = formData.get('state')
+        const city = formData.get('city')
+        const address = formData.get('address')
+        const price = formData.get('price')
+        const description = formData.get('description')
+        const propertyType = formData.get('property-type')
+        const propertyNumber = formData.get('property-number')
+        const numBedroom = formData.get('bedrooms')
+        const numBathroom = formData.get('bathrooms')
+
+        let valid = true
+        if (!name || name.toString().trim().length === 0) {
+            toast.error('É necessário adicionar um nome!');
+            valid = false
+        }
+        if (!cep || cep.toString().trim().length === 0) {
+            toast.error('É necessário adicionar um CEP!');
+            valid = false
+        }
+        if (!price || price.toString().trim().length === 0) {
+            toast.error('É necessário adicionar um preço!');
+            valid = false
+        }
+        if (!propertyNumber || propertyNumber.toString().trim().length === 0) {
+            toast.error('É necessário adicionar o número da propriedade!');
+            valid = false
+        }
+        if (!numBedroom || numBedroom.toString().trim().length === 0) {
+            toast.error('É necessário adicionar a quantidade de quartos!');
+            valid = false
+        }
+        if (!numBathroom || numBathroom.toString().trim().length === 0) {
+            toast.error('É necessário a quantidade de banheiros!');
+            valid = false
+        }
+        if (!description || description.toString().trim().length === 0) {
+            toast.error('É necessário adicionar uma descrição!');
+            valid = false
+        }
+        if (!state || state.toString().trim().length === 0) {
+            toast.error('É necessário adicionar um CEP!');
+            valid = false
+        }
+        
+
+        if(previews.length + property.imageData.length === 0){
+            toast.error('É necessário adicionar uma imagem!')
+            valid = false
+        }
+
+        return valid
+    }
+
+    // Envia a atualizacao de formulario
+    async function handleProperty(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault()
+        const formData = new FormData(event.currentTarget)
+
+        const valid = validateForm(formData);
+        if(!valid){
+            return
+        }
+
+        const token = Cookie.get('token')
+        
+        // Atualizacao da propriedade
+        const property = await api.put(`/properties/${props.propertyId}`, {
+            name: formData.get('name'),
+            cep: formData.get('cep'),
+            state: formData.get('state'),
+            city: formData.get('city'),
+            address: formData.get('address'),
+            price: parseFloat(formData.get('price')?.toString() ?? '0'),
+            description: formData.get('description'),
+            propertyType: formData.get('property-type'),
+            propertyNumber: parseInt(formData.get('property-number')?.toString() ?? '0'),
+            numBedroom: parseInt(formData.get('bedrooms')?.toString() ?? '0'),
+            numBathroom: parseInt(formData.get('bathrooms')?.toString() ?? '0'),
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+
+        // Remove as imagens
+        if (toRemove.length > 0) {
+            await api.delete(`/images`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                data: {
+                    ids: toRemove,
+                },
+            })
+
+        }
+
+        // Upload das novas imagens
+        if (previews.length > 0) {
+            const filesToUpload = formData.getAll('coverUrl')
+        
+            if (filesToUpload) {
+                const uploadFormData = new FormData()
+    
+                filesToUpload.forEach(async (file) => {
+                    uploadFormData.set('file', file)
+                    const uploadResponse = await api.post('/upload', uploadFormData) // Essa rota APENAS suporta multpart form data
+                    const imageUrl = uploadResponse.data.fileUrl
+                    const imageId = uploadResponse.data.fileId
+                    
+                    // Linkar imagens com propriedade
+                    await api.post('/images', {
+                        imageId: imageId,
+                        imageUrl:  imageUrl,
+                        propertyId: props.propertyId,
+                    }, {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    })
+    
+                })
+            }
+        }
+
+        router.push('/my-properties')
     }
 
     async function pickUpCEP(event: ChangeEvent<HTMLInputElement>) {
@@ -87,7 +237,7 @@ export default function EditPropertyForm(props : { propertyId: string | string[]
     function onImageSelected(event: ChangeEvent<HTMLInputElement>) {
         const { files } = event.target
 
-        if (!files || files.length > 5) {
+        if (!files || files.length + property.imageData.length > 5) {
             return
         }
 
@@ -103,7 +253,7 @@ export default function EditPropertyForm(props : { propertyId: string | string[]
             !property ? (
                 <p>Carregando...</p> 
             ) : ( 
-                <form>
+                <form onSubmit={handleProperty}>
                     <div className='flex items-center mb-4'>
                         <h1 className='text-2xl font-bold'>Editar propriedade</h1>
                     </div>
@@ -287,9 +437,25 @@ export default function EditPropertyForm(props : { propertyId: string | string[]
                                     accept='image/*'
                                     className='invisible h-0 w-0' 
                                     multiple
+                                    
                                 />  
                             </div>
                             <div className='flex flex-wrap justify-center'>
+                            {property.imageData.map((preview : {imageUrl: string, imageId: string}, index: number) => ( 
+                                                            <div key={index} className="relative">
+                                                                <img
+                                                                    src={preview.imageUrl}
+                                                                    alt={`Preview ${index}`}
+                                                                    className='h-[140px] w-[280px] rounded-lg object-cover m-2'
+                                                                />
+                                                                <span 
+                                                                    className="absolute bottom-4 right-4 z-10 text-red-700 hover:text-red-500 hover:cursor-pointer"
+                                                                    onClick={() => handleRemoveImage(preview)}
+                                                                >
+                                                                    <TiDelete className='w-8 h-8' />
+                                                                </span>
+                                                            </div>
+                            ))}
                             {previews.map((preview, index) => ( <img
                                                             key={index}
                                                             src={preview}

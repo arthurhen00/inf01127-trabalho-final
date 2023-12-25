@@ -37,7 +37,8 @@ model Property {
 
 model Image {
   id         String   @id @default(uuid())
-  imageUrl   String
+  imageId    String   @unique
+  imageUrl   String   @unique
   propertyId String
   property   Property @relation(fields: [propertyId], references: [id])
 }

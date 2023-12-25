@@ -90,12 +90,12 @@ export default function AddPropertyForm () {
             state: formData.get('state'),
             city: formData.get('city'),
             address: formData.get('address'),
-            price: parseFloat(formData.get('price')),
+            price: parseFloat(formData.get('price')?.toString() ?? '0'),
             description: formData.get('description'),
             propertyType: formData.get('property-type'),
-            propertyNumber: parseInt(formData.get('property-number')),
-            numBedroom: parseInt(formData.get('bedrooms')),
-            numBathroom: parseInt(formData.get('bathrooms')),
+            propertyNumber: parseInt(formData.get('property-number')?.toString() ?? '0'),
+            numBedroom: parseInt(formData.get('bedrooms')?.toString() ?? '0'),
+            numBathroom: parseInt(formData.get('bathrooms')?.toString() ?? '0'),
         }, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -114,9 +114,11 @@ export default function AddPropertyForm () {
                 uploadFormData.set('file', file)
                 const uploadResponse = await api.post('/upload', uploadFormData) // Essa rota APENAS suporta multpart form data
                 const imageUrl = uploadResponse.data.fileUrl
+                const imageId = uploadResponse.data.fileId
                 
                 // Linkar imagens com propriedade
                 await api.post('/images', {
+                    imageId: imageId,
                     imageUrl:  imageUrl,
                     propertyId: propertyId,
                 }, {

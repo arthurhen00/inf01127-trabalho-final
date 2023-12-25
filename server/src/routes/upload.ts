@@ -44,12 +44,7 @@ export async function uploadRoutes(app: FastifyInstance) {
         const fullUrl = request.protocol.concat('://').concat(request.hostname)
         const fileUrl = new URL(`/uploads/${filename}`, fullUrl).toString()
 
-        return { fileUrl }
-    })
-
-    // Deletar o arquivo do servidor
-    app.delete('/delete-image/:id', async (request, reply) => {
-
+        return { fileUrl, fileId }
     })
 
     // Relaciona imagem -> propriedade
@@ -57,14 +52,16 @@ export async function uploadRoutes(app: FastifyInstance) {
         await request.jwtVerify()
 
         const bodySchema = z.object({
+            imageId: z.string(),
             imageUrl: z.string(),
             propertyId: z.string(),
         })
 
-        const { imageUrl, propertyId } = bodySchema.parse(request.body)
+        const { imageId, imageUrl, propertyId } = bodySchema.parse(request.body)
         
         const image = await prisma.image.create({
             data: {
+                imageId,
                 imageUrl,
                 propertyId,
             },
@@ -89,6 +86,7 @@ export async function uploadRoutes(app: FastifyInstance) {
             },
             select: {
                 imageUrl: true,
+                imageId: true,
             },
         })
 
@@ -113,5 +111,25 @@ export async function uploadRoutes(app: FastifyInstance) {
 
         return image
     })
- 
+
+    // Deleta 1 imagem pelo seu id
+    app.delete('/images', async (request) => {
+        await request.jwtVerify()
+
+        const paramsSchema = z.object({
+            ids: z.array(z.string()),
+        })
+
+        const { ids } = paramsSchema.parse(request.body)
+
+        const image = await prisma.image.deleteMany({
+            where: {
+                imageId: {
+                    in: ids,
+                },
+            },
+        })
+
+        return image
+    })
 }

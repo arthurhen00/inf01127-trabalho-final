@@ -59,9 +59,7 @@ export async function propertiesRoutes(app: FastifyInstance) {
             numBathroom: z.number(),
         })
         
-        console.log(request.body)
         const form = bodySchema.safeParse(request.body)
-        console.log(form)
         
         if (!form.success) {
             const { errors } = form.error;
@@ -72,7 +70,6 @@ export async function propertiesRoutes(app: FastifyInstance) {
                 error: { message: "Invalid request", errors },
             })
         }
-        console.log('3')
 
         const { name, cep, state, city, 
                 address, price, description, propertyType,
@@ -107,11 +104,34 @@ export async function propertiesRoutes(app: FastifyInstance) {
         const { id } = paramsSchema.parse(request.params)
 
         const bodySchema = z.object({
-            zipcode: z.string(),
+            name : z.string(),
+            cep: z.string(),
+            state: z.string(),
+            city: z.string(),
+            address: z.string(),
+            price: z.number(),
             description: z.string(),
+            propertyType: z.string(),
+            propertyNumber: z.number(),
+            numBedroom: z.number(),
+            numBathroom: z.number(),
         })
 
-        const { zipcode, description } = bodySchema.parse(request.body)
+        const form = bodySchema.safeParse(request.body)
+        
+        if (!form.success) {
+            const { errors } = form.error;
+
+            console.log(errors)
+            
+            return reply.status(400).send({
+                error: { message: "Invalid request", errors },
+            })
+        }
+
+        const { name, cep, state, city, 
+                address, price, description, propertyType,
+                propertyNumber, numBedroom, numBathroom } = form.data;
 
         let property = await prisma.property.findUniqueOrThrow({
             where: {
@@ -128,8 +148,17 @@ export async function propertiesRoutes(app: FastifyInstance) {
                 id,
             },
             data: {
-                zipcode,
+                name,
+                zipcode: cep,
+                state,
+                city,
+                address,
+                price,
                 description,
+                propertyType,
+                propertyNumber,
+                numBedroom,
+                numBathroom,
             },
         })
 
