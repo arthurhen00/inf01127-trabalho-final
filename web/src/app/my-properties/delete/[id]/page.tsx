@@ -53,11 +53,18 @@ export default async function PropertyDelete(context: GetServerSidePropsContext)
       <Menu />
 
       <main className='bg-gray-100 px-24 flex flex-col'>
+
+        {/** Menu info */}
         <div className="flex flex-1 justify-between">
           <h1>{property.propertiesData.name}{', '}{property.propertiesData.state}</h1>
-          <a href={`/my-properties/delete?id=${propertyId}`} className="text-red-800 hover:text-red-600">Confirmar e deletar</a>
+          <div>
+            <a href="/my-properties" className="text-black hover:text-gray-500 mr-4">Voltar</a>
+            <a href={`/my-properties/delete?id=${propertyId}`} className="text-red-800 hover:text-red-600">Confirmar e deletar</a>
+          </div>
         </div>
         <div className="border-[1px] flex flex-1 border-gray-400 mb-2"></div>
+        
+        {/** Info box */}
         <div className="flex">
           <div className="w-1/3 text-sm leading-relaxed">
             <h1 className="text-2xl mb-4">Informações do cadastro</h1>

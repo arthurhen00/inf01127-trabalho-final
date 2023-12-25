@@ -238,6 +238,7 @@ export default function EditPropertyForm(props : { propertyId: string | string[]
         const { files } = event.target
 
         if (!files || files.length + property.imageData.length > 5) {
+            toast.error('5 imagens no máximo!')
             return
         }
 
@@ -254,10 +255,18 @@ export default function EditPropertyForm(props : { propertyId: string | string[]
                 <p>Carregando...</p> 
             ) : ( 
                 <form onSubmit={handleProperty}>
-                    <div className='flex items-center mb-4'>
+                    {/** Menu info */}
+                    <div className="flex flex-1 justify-between">
+                        <h1>{property.propertyData.name}{', '}{property.propertyData.state}</h1>
+                        <a href="/my-properties" className="text-black hover:text-gray-500">Voltar</a>
+                    </div>
+                    <div className="border-[1px] flex flex-1 border-gray-400 mb-2"></div>
+
+                    <div className='flex items-center'>
                         <h1 className='text-2xl font-bold'>Editar propriedade</h1>
                     </div>
 
+                    {/** Form box */}
                     <div className='flex'>               
                         {/** Esq */}
                         <div className="flex"> 

@@ -130,13 +130,14 @@ export default function AddPropertyForm () {
             })
         }
 
-        router.push('/home')
+        router.push('/my-properties')
     }
 
     function onImageSelected(event: ChangeEvent<HTMLInputElement>) {
         const { files } = event.target
 
         if (!files || files.length > 5) {
+            toast.error('5 imagens no máximo!')
             return
         }
 
