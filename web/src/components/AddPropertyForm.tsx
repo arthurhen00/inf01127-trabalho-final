@@ -103,7 +103,7 @@ export default function AddPropertyForm () {
         })
 
         const propertyId = property.data.id
-
+        
         // Upload dos arquivos
         const filesToUpload = formData.getAll('coverUrl')
         

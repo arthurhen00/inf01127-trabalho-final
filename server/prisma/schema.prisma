@@ -31,8 +31,8 @@ model Property {
   description    String
   createdAt      DateTime @default(now())
   userId         String
-  user           User     @relation(fields: [userId], references: [id])
   images         Image[]
+  user           User     @relation(fields: [userId], references: [id])
 }
 
 model Image {

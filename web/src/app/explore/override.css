@@ -1,0 +1,27 @@
+.carousel-slider{
+    height: 100%;
+}
+
+.carousel .slide img {
+    max-height: 100%; 
+    width: auto;
+}
+
+.slider-wrapper{
+    max-height: 100%; 
+}
+.slider-wrapper ul, .slider-wrapper ul li{
+    max-height: 100%; 
+}
+
+.carousel .control-prev.control-arrow:before{
+    border-right: 8px solid #000;
+}
+
+.carousel .control-next.control-arrow:before{
+    border-left: 8px solid #000;
+}
+
+.carousel .control-arrow, .carousel.carousel-slider .control-arrow{
+    opacity: unset;
+}

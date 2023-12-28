@@ -3,6 +3,26 @@ import { z } from 'zod'
 import { prisma } from '../lib/prisma'
 
 export async function usersRoutes(app: FastifyInstance) {
+
+    // Listar propriedades
+    app.get('/user/properties', async (request, reply) => {
+        await request.jwtVerify()
+        try{
+            const properties = await prisma.property.findMany({
+                where: {
+                    userId: request.user.sub, // id do usuario autenticado
+                },
+                orderBy: {
+                    createdAt: 'asc',
+                },
+            })
+
+            return properties
+        }catch(e){
+            return reply.status(404).send();
+        }
+    })
+
     app.get('/users', async () => {
         const users = await prisma.user.findMany({
             orderBy: {

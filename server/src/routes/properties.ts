@@ -2,17 +2,14 @@ import { FastifyInstance } from 'fastify'
 import { z } from 'zod'
 import { prisma } from '../lib/prisma'
 
+
 export async function propertiesRoutes(app: FastifyInstance) {
     app.addHook('preHandler', async (request) => {
         await request.jwtVerify()
     })
 
-    // Listagem
     app.get('/properties', async (request) => {
         const properties = await prisma.property.findMany({
-            where: {
-                userId: request.user.sub, // id do usuario autenticado
-            },
             orderBy: {
                 createdAt: 'asc',
             },

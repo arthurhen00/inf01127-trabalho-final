@@ -27,7 +27,7 @@ interface Property {
 export default async function ListProperty() {
     const token = cookies().get('token')?.value
 
-    const propertyResponse = await api.get('/properties', {
+    const propertyResponse = await api.get('/user/properties', {
         headers: {
             Authorization: `Bearer ${token}`
         }
