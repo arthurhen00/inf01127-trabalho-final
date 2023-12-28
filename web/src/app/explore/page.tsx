@@ -28,7 +28,7 @@ interface Property {
     images?: ImageInfo[]
 }
 
-export default async function ListProperty() {
+export default async function ExplorePage() {
     const token = cookies().get('token')?.value
 
     const propertyResponse = await api.get('/properties', {
@@ -51,20 +51,19 @@ export default async function ListProperty() {
           });
           const images = imageResponse.data;
           property.images = images;
-          console.log(property)
           return property;
         })
       );
 
-    return(
-    <div className='flex flex-col items-stretch bg-gray-100 h-screen'>      
-            <Header />
-            <Menu />
+  return(
+    <div className='flex flex-col bg-gray-100 h-screen'>      
+      <Header />
+      <Menu />
         
-
-        <main className='bg-gray-100 px-24 h-80 flex-1'>
-            <Explorer properties={properties}/>
-        </main>
-        </div>
-    )
+      <main className='bg-gray-100 px-24 h-80 flex-1'>
+          <h1 className='text-2xl'>Explorar</h1>
+          <Explorer properties={properties}/>
+      </main>
+    </div>
+  )
 }

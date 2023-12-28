@@ -39,14 +39,48 @@ interface ExplorerProps {
     };
   
     return (
-      <div className='h-full flex flex-col items-center '>
-        <h2>{currentProperty.name}</h2>
-        <ImageCaroussel key={currentPropertyIndex} images={currentProperty.images} />
-        <div className='flex items-center w-3/5 justify-evenly'>
-          <button >Curtir</button>
-          <button onClick={handleNextProperty}>Próximo Imóvel</button>
+      <div className='flex flex-col items-center'>
+
+        <div className='w-1/2 flex flex-col'>
+          <ImageCaroussel key={currentPropertyIndex} images={currentProperty.images} />
+          <div className='text-pink-600 self-end'>
+            <button onClick={handleNextProperty} >Próximo Imóvel</button>
+            <button onClick={handleNextProperty} className='ml-4'>Curtir</button>
+          </div>
         </div>
-        
+
+        <div className='flex flex-col w-1/2 text-sm items-center'>
+          <div className="mb-2 text-lg">
+            <span>{currentProperty.name}</span>
+            {', '}
+            <span>{currentProperty.city}</span>
+            {' - '}
+            <span>{currentProperty.state}</span>
+          </div>
+
+          <div className="mb-2">
+            {currentProperty.propertyType === 'house' ? <span>Casa</span> : <span>Apartamento</span>}
+            {' . '}
+            {currentProperty.numBedroom > 1 ?
+              <span>{currentProperty.numBedroom} quartos</span> :
+              <span>{currentProperty.numBedroom} quarto</span>
+            }
+            {' . '}
+            {currentProperty.numBathroom > 1 ?
+              <span>{currentProperty.numBathroom} banheiros</span> :
+              <span>{currentProperty.numBathroom} banheiro</span>
+            }
+            {' - '}
+            <span>{currentProperty.price}</span>
+            <span> Reais</span>
+          </div>
+
+          <div className="mb-2 text-justify">
+            <span>{currentProperty.description}</span>
+          </div>
+                    
+        </div>
+
       </div>
     );
   };

@@ -8,23 +8,23 @@ interface ImageInfo {
 	imageId: string;
 }
 
-export default class ImageCaroussel extends Component<{ images: ImageInfo[] }> {
+export default class ImageCaroussel extends Component<{ images: ImageInfo[] | undefined }> {
 render() {
 	const { images } = this.props;
 	if (!images || images.length === 0) {
 		return <p>No images to display.</p>;
-	  }
+	}
 	return (
-		<Carousel 	showIndicators={false} 
+		<Carousel 	showIndicators={true} 
 					showStatus={false} 
 					infiniteLoop={true} 
 					showThumbs={false} 
 					dynamicHeight = {true}
 					useKeyboardArrows = {true}
-					className='h-1/2 flex-1 flex flex-col'>
+					>
 		{images.map(({ imageUrl, imageId }, index) => (
-			<div key={index} className='h-full'>
-				<img src={imageUrl} alt={`image${index + 1}`} className='object-contain h-full w-auto'/>
+			<div key={index}>
+				<img src={imageUrl} alt={`image${index + 1}`} className='h-[340px] w-[520px] rounded-lg object-cover'/>
 			</div>
 		))}
 		</Carousel>
