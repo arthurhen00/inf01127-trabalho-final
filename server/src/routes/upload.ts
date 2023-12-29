@@ -35,6 +35,8 @@ export async function uploadRoutes(app: FastifyInstance) {
 
         const filename = fileId.concat(extension)
 
+        console.log(filename)
+
         const writeStream = createWriteStream(
             resolve(__dirname, '../../uploads/', filename)
         )
@@ -93,7 +95,7 @@ export async function uploadRoutes(app: FastifyInstance) {
         return image
     })
 
-    // Delete Imagens de uma propriedade
+    // deleta todas as imagens de uma propriedade ID
     app.delete('/images/:id', async (request) => {
         await request.jwtVerify()
 
@@ -112,7 +114,7 @@ export async function uploadRoutes(app: FastifyInstance) {
         return image
     })
 
-    // Deleta 1 imagem pelo seu id
+    // Deleta um array de imagem
     app.delete('/images', async (request) => {
         await request.jwtVerify()
 
@@ -132,4 +134,38 @@ export async function uploadRoutes(app: FastifyInstance) {
 
         return image
     })
+
+    // Rota para excluir arquivos filename = id + extension
+    app.delete('/upload/:filename', async (request, reply) => {
+        await request.jwtVerify()
+
+        const { unlink } = require('fs')
+
+        const paramsSchema = z.object({
+            filename: z.string(),
+        })
+ 
+        const { filename } = paramsSchema.parse(request.params);
+        
+        // Verifica se o fileId é fornecido
+        if (!filename) {
+            return reply.status(400).send({ error: 'File ID is required.' });
+        }
+        
+        // Construa o caminho do arquivo
+        const filePath = resolve(__dirname, '../../uploads/', filename);
+        console.log(filename)
+        console.log(filePath)
+        // Tenta excluir o arquivo
+        try {
+            await promisify(unlink)(filePath);
+        } catch (error) {
+            // Se ocorrer um erro (por exemplo, arquivo não encontrado), retorne um status de erro
+            return reply.status(500).send({ error: 'Failed to delete the file.' });
+        }
+        
+        // Retorna uma resposta de sucesso
+        return reply.send({ message: 'File deleted successfully.' });
+    })
+
 }

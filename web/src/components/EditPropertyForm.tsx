@@ -18,7 +18,7 @@ export default function EditPropertyForm(props : { propertyId: string | string[]
     const [property, setProperty] = useState<any>(null)
     const [previews, setPreviews] = useState<string[]>([])
     
-    const [toRemove, setToRemove] = useState<string[]>([])
+    const [toRemove, setToRemove] = useState<{ imageToRemoveId: string; imageToRemoveExtension: string }[]>([]);
 
     
     useEffect(() => {
@@ -44,7 +44,13 @@ export default function EditPropertyForm(props : { propertyId: string | string[]
         setProperty(newProperty)
 
         const imageToRemoveId = imageToRemove.imageId
-        setToRemove((prevToRemove) => [...prevToRemove, imageToRemoveId])
+
+        const regex = /\.([a-zA-Z0-9]+)$/
+        const match = imageToRemove.imageUrl.match(regex);
+        const extension = match ? match[1] : ''
+        const imageToRemoveExtension = ('.' + extension)
+
+        setToRemove((prevToRemove) => [...prevToRemove, { imageToRemoveId, imageToRemoveExtension }])
     }
 
     // Recebe as informacoes do formulario
@@ -157,15 +163,26 @@ export default function EditPropertyForm(props : { propertyId: string | string[]
 
         // Remove as imagens
         if (toRemove.length > 0) {
+            const idsToRemove = toRemove.map(item => item.imageToRemoveId);
+
             await api.delete(`/images`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
                 data: {
-                    ids: toRemove,
+                    ids: idsToRemove,
                 },
             })
-
+            
+            toRemove.forEach(async (item) => {
+                const fileName = item.imageToRemoveId.concat(item.imageToRemoveExtension)
+                const uploadDeleteResponse = await api.delete(`/upload/${fileName}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
+            })
+            
         }
 
         // Upload das novas imagens
