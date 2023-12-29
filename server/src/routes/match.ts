@@ -25,10 +25,9 @@ export async function matchRoutes(app: FastifyInstance) {
         })
 
         return matchRequest
-   
     })
 
-    // List match Requet
+    // List match Request
     app.get('/matchRequest', async (request) => {
         const matches = await prisma.matchRequest.findMany({
             where: {
@@ -40,6 +39,23 @@ export async function matchRoutes(app: FastifyInstance) {
         })
 
         return matches
+    })
+
+    // List match Request ID
+    app.get('/matchRequest/:id', async (request) => {
+        const paramsSchema = z.object({
+            id: z.string().uuid(),
+        })
+
+        const { id } = paramsSchema.parse(request.params)
+
+        const match = await prisma.matchRequest.findUniqueOrThrow({
+            where: {
+                id,
+            }
+        })
+
+        return match
     })
 
     // Delete matchRequest
@@ -68,7 +84,37 @@ export async function matchRoutes(app: FastifyInstance) {
     })
 
     // Create match
+    app.post('/match', async (request) => {
+        const userSchema = z.object({
+            requesterId: z.string(),
+            propertyId: z.string(),
+        })
+
+        const { requesterId, propertyId } = userSchema.parse(request.body)
+        
+        const matchRequest = await prisma.match.create({
+            data: {
+                requesterId,
+                receiverId: request.user.sub,
+                propertyId,
+            },
+        })
+
+        return matchRequest
+    })
 
     // List match
+    app.get('/match', async (request) => {
+        const matches = await prisma.match.findMany({
+            where: {
+                receiverId: request.user.sub,
+            },
+            orderBy: {
+                propertyId: 'asc',
+            },
+        })
+
+        return matches
+    })
 
 }

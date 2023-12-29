@@ -54,7 +54,6 @@ export default async function MatchRequestPage() {
             <Header />
             <Menu />
 
-
             <main className='bg-gray-100 px-24'>
 
                 {matchRequest.length === 0 ? 
@@ -115,7 +114,7 @@ export default async function MatchRequestPage() {
                                             </div>
                                         </div>
                                         <div className='flex self-end'>
-                                            <a href='' className='hover:text-gray-400'>Aceitar</a>
+                                            <a href={`/match-request/accept?id=${match.matchData.id}`} className='hover:text-gray-400'>Aceitar</a>
                                             <a href={`/match-request/reject?id=${match.matchData.id}`} className='ml-4 text-red-800 hover:text-red-600'>Recusar</a>
                                         </div>
                                     </div>
