@@ -35,7 +35,7 @@ export async function matchRoutes(app: FastifyInstance) {
                 receiverId: request.user.sub,
             },
             orderBy: {
-                createdAt: 'asc',
+                propertyId: 'asc',
             },
         })
 
