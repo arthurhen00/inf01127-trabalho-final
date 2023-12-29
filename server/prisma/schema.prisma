@@ -17,7 +17,7 @@ model User {
 }
 
 model Property {
-  id             String   @id @default(uuid())
+  id             String         @id @default(uuid())
   name           String
   zipcode        String
   state          String
@@ -29,10 +29,12 @@ model Property {
   numBedroom     Int
   numBathroom    Int
   description    String
-  createdAt      DateTime @default(now())
+  createdAt      DateTime       @default(now())
   userId         String
+  user           User           @relation(fields: [userId], references: [id])
   images         Image[]
-  user           User     @relation(fields: [userId], references: [id])
+  MatchRequest   MatchRequest[]
+  Match          Match[]
 }
 
 model Image {
@@ -41,4 +43,22 @@ model Image {
   imageUrl   String   @unique
   propertyId String
   property   Property @relation(fields: [propertyId], references: [id])
+}
+
+model MatchRequest {
+  id          String   @id @default(uuid())
+  requesterId String
+  receiverId  String
+  createdAt   DateTime @default(now())
+  propertyId  String
+  property    Property @relation(fields: [propertyId], references: [id])
+}
+
+model Match {
+  id          String   @id @default(uuid())
+  requesterId String
+  receiverId  String
+  createdAt   DateTime @default(now())
+  propertyId  String
+  property    Property @relation(fields: [propertyId], references: [id])
 }

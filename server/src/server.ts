@@ -7,6 +7,7 @@ import { usersRoutes } from './routes/users'
 import { propertiesRoutes } from './routes/properties'
 import { uploadRoutes } from './routes/upload'
 import { resolve } from 'path'
+import { matchRoutes } from './routes/match'
 
 const app = fastify()
 
@@ -29,6 +30,7 @@ app.register(faStatic, {
 app.register(usersRoutes)
 app.register(propertiesRoutes)
 app.register(uploadRoutes)
+app.register(matchRoutes)
 
 app.get('/', () => {
     return 'kkk rodou'

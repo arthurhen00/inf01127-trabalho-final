@@ -10,6 +10,11 @@ export async function propertiesRoutes(app: FastifyInstance) {
 
     app.get('/properties', async (request) => {
         const properties = await prisma.property.findMany({
+            where: {
+                userId: {
+                    not: request.user.sub,
+                },
+            },
             orderBy: {
                 createdAt: 'asc',
             },

@@ -1,6 +1,8 @@
 'use client'
 import ImageCaroussel from '@/components/ImageCaroussel'
+import { api } from '@/lib/api';
 import { useState } from 'react'
+import Cookie from 'js-cookie'
 
 interface ImageInfo {
     imageUrl: string;
@@ -37,6 +39,22 @@ interface ExplorerProps {
       const nextIndex = (currentPropertyIndex + 1) % properties.length;
       setCurrentPropertyIndex(nextIndex);
     };
+
+    async function handleMatchRequest() {
+      const token = Cookie.get('token')
+      
+      const matchRequest = await api.post('/matchRequest', {
+        receiverId: currentProperty.userId,
+        propertyId: currentProperty.id,
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+
+
+      handleNextProperty()
+    }
   
     return (
       <div className='flex flex-col items-center'>
@@ -45,7 +63,7 @@ interface ExplorerProps {
           <ImageCaroussel key={currentPropertyIndex} images={currentProperty.images} />
           <div className='text-pink-600 self-end'>
             <button onClick={handleNextProperty} >Próximo Imóvel</button>
-            <button onClick={handleNextProperty} className='ml-4'>Curtir</button>
+            <button onClick={handleMatchRequest} className='ml-4'>Curtir</button>
           </div>
         </div>
 

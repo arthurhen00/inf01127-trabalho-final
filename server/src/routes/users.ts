@@ -23,6 +23,29 @@ export async function usersRoutes(app: FastifyInstance) {
         }
     })
 
+    // Lista 1 usuario
+    app.get('/user/:id', async (request) => {
+        await request.jwtVerify()
+        const paramsSchema = z.object({
+            id: z.string().uuid(),
+        })
+
+        const { id } = paramsSchema.parse(request.params)
+
+        const user = await prisma.user.findUniqueOrThrow({
+            where: {
+                id,
+            },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+            },
+        })
+
+        return user
+    })
+
     app.get('/users', async () => {
         const users = await prisma.user.findMany({
             orderBy: {
