@@ -51,7 +51,7 @@ model MatchRequest {
   receiverId  String
   createdAt   DateTime @default(now())
   propertyId  String
-  property    Property @relation(fields: [propertyId], references: [id])
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 }
 
 model Match {
