@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Menu from "@/components/Menu";
+import Unauthenticated from "@/components/Unauthenticated";
 import { api } from "@/lib/api";
 import { GetServerSidePropsContext } from "next";
 import { cookies } from "next/headers";
@@ -26,6 +27,11 @@ interface Image {
 }
 
 export default async function PropertyDetails(context: GetServerSidePropsContext) {
+  const isAuthenticated = cookies().has('token')
+
+  if (!isAuthenticated) {
+    return (<Unauthenticated />)
+  }
 
   const propertyId = context.params?.id
   const token = cookies().get('token')?.value

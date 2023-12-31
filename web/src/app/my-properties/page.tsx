@@ -1,8 +1,15 @@
 import Header from '@/components/Header'
 import ListProperty from '@/components/ListProperty';
 import Menu from '@/components/Menu'
+import Unauthenticated from '@/components/Unauthenticated';
+import { cookies } from 'next/headers';
 
 export default function MyPropertiesPage() {
+  const isAuthenticated = cookies().has('token')
+
+  if (!isAuthenticated) {
+    return (<Unauthenticated />)
+  }
 
   return(
     <div className='flex flex-col h-screen bg-gray-100'>

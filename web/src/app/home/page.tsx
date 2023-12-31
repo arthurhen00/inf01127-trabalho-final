@@ -1,13 +1,14 @@
 import { cookies } from 'next/headers'
-import { getUser } from '@/lib/auth'
-
 import Header from '@/components/Header'
 import Menu from '@/components/Menu'
+import Unauthenticated from '@/components/Unauthenticated'
  
 export default function Home() {
   const isAuthenticated = cookies().has('token')
 
-  const { name, email } = getUser()
+  if (!isAuthenticated) {
+    return (<Unauthenticated />)
+  }
 
   return (
       <div className='flex flex-col h-screen bg-gray-100'>        

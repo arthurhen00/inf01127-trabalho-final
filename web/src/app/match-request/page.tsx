@@ -1,9 +1,15 @@
 import Header from '@/components/Header'
 import Menu from '@/components/Menu'
+import Unauthenticated from '@/components/Unauthenticated'
 import { api } from '@/lib/api'
 import { cookies } from 'next/headers'
 
 export default async function MatchRequestPage() {
+    const isAuthenticated = cookies().has('token')
+
+    if (!isAuthenticated) {
+      return (<Unauthenticated />)
+    }
 
     const token = cookies().get('token')?.value
 

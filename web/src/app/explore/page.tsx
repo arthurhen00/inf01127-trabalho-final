@@ -4,6 +4,7 @@ import EmptyPropertyList from '@/components/EmptyPropertyList'
 import Explorer from '@/components/Explorer'
 import { api } from '@/lib/api'
 import { cookies } from 'next/headers'
+import Unauthenticated from '@/components/Unauthenticated'
 
 interface ImageInfo {
     imageUrl: string;
@@ -30,6 +31,11 @@ interface Property {
 
 export default async function ExplorePage() {
     const token = cookies().get('token')?.value
+    const isAuthenticated = cookies().has('token')
+
+    if (!isAuthenticated) {
+      return (<Unauthenticated />)
+    }
 
     const propertyResponse = await api.get('/properties', {
         headers: {
@@ -60,7 +66,7 @@ export default async function ExplorePage() {
       <main className='bg-gray-100 px-24 h-80 flex-1'>
           <h1 className='text-2xl font-bold mb-4'>Explorar</h1>
           {propertiesData.length == 0 ?
-              <span>Desculpe, não encontramos nenhuma imóvel.</span>
+              <span>Desculpe, não encontramos nenhum imóvel.</span>
             :
               <Explorer properties={properties}/>
           }
