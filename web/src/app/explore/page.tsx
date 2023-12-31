@@ -39,9 +39,6 @@ export default async function ExplorePage() {
 
     const propertiesData : Property[] = propertyResponse.data
 
-    if (propertiesData.length == 0) {
-        return (<EmptyPropertyList />)
-    }
     const properties = await Promise.all(
         propertiesData.map(async (property) => {
           const imageResponse = await api.get(`/images/${property.id}`, {
@@ -61,8 +58,12 @@ export default async function ExplorePage() {
       <Menu />
         
       <main className='bg-gray-100 px-24 h-80 flex-1'>
-          <h1 className='text-2xl'>Explorar</h1>
-          <Explorer properties={properties}/>
+          <h1 className='text-2xl font-bold mb-4'>Explorar</h1>
+          {propertiesData.length == 0 ?
+              <span>Desculpe, não encontramos nenhuma imóvel.</span>
+            :
+              <Explorer properties={properties}/>
+          }
       </main>
     </div>
   )

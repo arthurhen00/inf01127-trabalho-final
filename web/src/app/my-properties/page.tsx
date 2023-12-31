@@ -10,7 +10,7 @@ export default function MyPropertiesPage() {
       <Menu />
 
       <main className='bg-gray-100 px-24 flex flex-col'>
-        <h1 className='text-2xl'>Meus imóveis</h1>
+        <h1 className='text-2xl font-bold'>Meus imóveis</h1>
         <ListProperty />
       </main>
     </div>
