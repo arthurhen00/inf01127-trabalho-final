@@ -45,3 +45,9 @@ interface MatchData {
     imageData: Image[]
     matchData: MatchRequest
 }
+
+const MatchStatus = {
+    pending: 'Pending',
+    accept: 'Accept',
+    reject: 'Reject',
+}

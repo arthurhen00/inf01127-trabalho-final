@@ -11,9 +11,17 @@ export async function GET(request: NextRequest) {
 
     const token = cookies().get('token')?.value
 
-    const response = await api.delete(`/matchRequest/${id}`, {
+    /*const response = await api.delete(`/matchRequest/${id}`, {
         headers: {
             Authorization: `Bearer ${token}` 
+        }
+    })*/
+
+    await api.put(`/matchRequest/${id}`, {
+        status: 'Reject'
+    }, {
+        headers: {
+            Authorization: `Bearer ${token}`
         }
     })
 

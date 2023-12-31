@@ -16,11 +16,12 @@ export async function matchRoutes(app: FastifyInstance) {
 
         const { receiverId, propertyId } = userSchema.parse(request.body)
         
-        const matchRequest = await prisma.matchRequest.create({
+        const matchRequest = await prisma.match.create({
             data: {
                 requesterId: request.user.sub,
                 receiverId,
                 propertyId,
+                matchStatus: 'Pending'
             },
         })
 
@@ -29,9 +30,10 @@ export async function matchRoutes(app: FastifyInstance) {
 
     // List match Request
     app.get('/matchRequest', async (request) => {
-        const matches = await prisma.matchRequest.findMany({
+        const matches = await prisma.match.findMany({
             where: {
                 receiverId: request.user.sub,
+                matchStatus: 'Pending'
             },
             orderBy: {
                 propertyId: 'asc',
@@ -49,7 +51,7 @@ export async function matchRoutes(app: FastifyInstance) {
 
         const { id } = paramsSchema.parse(request.params)
 
-        const match = await prisma.matchRequest.findUniqueOrThrow({
+        const match = await prisma.match.findUniqueOrThrow({
             where: {
                 id,
             }
@@ -66,7 +68,7 @@ export async function matchRoutes(app: FastifyInstance) {
 
         const { id } = paramsSchema.parse(request.params)
 
-        const matches = await prisma.matchRequest.findUniqueOrThrow({
+        const matches = await prisma.match.findUniqueOrThrow({
             where: {
                 id,
             },
@@ -76,7 +78,7 @@ export async function matchRoutes(app: FastifyInstance) {
             return reply.status(401).send()
         }
 
-        await prisma.matchRequest.delete({
+        await prisma.match.delete({
             where: {
                 id,
             }
@@ -97,6 +99,7 @@ export async function matchRoutes(app: FastifyInstance) {
                 requesterId,
                 receiverId: request.user.sub,
                 propertyId,
+                matchStatus: 'Pending',
             },
         })
 
@@ -115,6 +118,31 @@ export async function matchRoutes(app: FastifyInstance) {
         })
 
         return matches
+    })
+
+    app.put('/matchRequest/:id', async (request) => {
+        const paramsSchema = z.object({
+            id: z.string().uuid(),
+        })
+
+        const { id } = paramsSchema.parse(request.params)
+
+        const bodySchema = z.object({
+            status: z.string()
+        })
+
+        const { status } = bodySchema.parse(request.body)
+
+        const match = await prisma.match.update({
+            where: {
+                id,
+            },
+            data: {
+                matchStatus: status
+            },
+        })
+
+        return match
     })
 
 }
