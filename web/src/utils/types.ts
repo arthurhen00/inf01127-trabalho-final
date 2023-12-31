@@ -4,6 +4,7 @@ interface MatchRequest {
     receiverId: String
     createdAt: String
     propertyId: String
+    matchStatus: String
 }
 
 interface Property {

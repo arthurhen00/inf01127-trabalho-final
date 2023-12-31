@@ -145,4 +145,26 @@ export async function matchRoutes(app: FastifyInstance) {
         return match
     })
 
+    // Lista os mastchs aceitos, tanto das minhas props curtidas, quanto as que eu curti
+    app.get('/matchAccept', async (request) => {
+        const matches = await prisma.match.findMany({
+            where: {
+                OR: [
+                    {
+                        receiverId: request.user.sub,
+                        matchStatus: 'Accept'
+                    }, {
+                        requesterId: request.user.sub,
+                        matchStatus: 'Accept'
+                    }
+                ]
+            },
+            orderBy: {
+                propertyId: 'asc',
+            },
+        })
+
+        return matches
+    })
+
 }

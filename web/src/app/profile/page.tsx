@@ -1,7 +1,7 @@
 import Header from '@/components/Header'
 import Menu from '@/components/Menu'
  
-export default function Home() {
+export default function ProfilePage() {
 
   return (
       <div className='flex flex-col h-screen bg-gray-100'>        

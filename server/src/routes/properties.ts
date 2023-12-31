@@ -37,9 +37,9 @@ export async function propertiesRoutes(app: FastifyInstance) {
             }
         })
 
-        if (property.userId != request.user.sub) {
+        /*if (property.userId != request.user.sub) {
             return reply.status(401).send()
-        }
+        }*/
 
         return property
 

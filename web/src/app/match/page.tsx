@@ -1,13 +1,15 @@
 import Header from '@/components/Header'
 import Menu from '@/components/Menu'
 import { api } from '@/lib/api'
+import { getUser } from '@/lib/auth'
 import { cookies } from 'next/headers'
 
-export default async function MatchRequestPage() {
+export default async function MatchPage() {
 
     const token = cookies().get('token')?.value
+    const { sub } = getUser()
 
-    const matchRequestResponse = await api.get('/matchRequest', {
+    const matchRequestResponse = await api.get('/matchAccept', {
         headers: {
             Authorization: `Bearer ${token}`
         }
@@ -23,7 +25,7 @@ export default async function MatchRequestPage() {
                 }
             })
             const propertyData = propertyResponse.data
-
+        
             const imageResponse = await api.get(`/images/${propertyResponse.data.id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -42,7 +44,6 @@ export default async function MatchRequestPage() {
             
             return { userData, propertyData, imageData, matchData }
         })
-
     )
 
     return (
@@ -52,11 +53,11 @@ export default async function MatchRequestPage() {
 
             <main className='bg-gray-100 px-24'>
                 <div className='flex items-center mb-4'>
-                    <h1 className='text-2xl font-bold'>Interessados nas suas propriedades</h1>
+                    <h1 className='text-2xl font-bold'>Seus matches</h1>
                 </div>
                 {matchRequest.length === 0 ? 
                     <>
-                        <p>Ainda não há interessados.</p>
+                        <p>Ainda não há matches.</p>
                     </>
                 : 
                 <>
@@ -97,6 +98,7 @@ export default async function MatchRequestPage() {
                                     </div>
 
                                     <div className='flex flex-col justify-between flex-1'>
+                                        { match.matchData.receiverId === sub &&
                                         <div>
                                             <div className='text-lg font-bold'>
                                                 <span>Informações do interessado</span>
@@ -108,9 +110,21 @@ export default async function MatchRequestPage() {
                                                 <span>Email: {match.userData.email}</span>
                                             </div>
                                         </div>
-                                        <div className='flex self-end'>
-                                            <a href={`/match-request/accept?id=${match.matchData.id}`} className='hover:text-gray-400'>Aceitar</a>
-                                            <a href={`/match-request/reject?id=${match.matchData.id}`} className='ml-4 text-red-800 hover:text-red-600'>Recusar</a>
+                                        }
+                                        <div className='flex self-end h-full items-end'>
+                                            <a href={``} className='hover:text-gray-400'>Chat</a>
+                                            {
+                                                match.matchData.receiverId === sub ? 
+                                                <>
+                                                    <a href={``} className='ml-4 hover:text-gray-400'>Gerar contrato</a>
+                                                </> 
+                                                : 
+                                                <>
+                                                    <a href={``} className='ml-4 hover:text-gray-400'>Ler contrato</a>
+                                                </>
+                                            }
+                                            
+                                            
                                         </div>
                                     </div>
                                 </div>
