@@ -118,7 +118,7 @@ export default async function MatchPage() {
                                         </div>
                                         }
                                         <div className='flex self-end h-full items-end'>
-                                            <a href={``} className='hover:text-gray-400'>Chat</a>
+                                            <a href={`match/chat/${match.matchData.id}`} className='hover:text-gray-400'>Chat</a>
                                             {
                                                 match.matchData.receiverId === sub ? 
                                                 <>

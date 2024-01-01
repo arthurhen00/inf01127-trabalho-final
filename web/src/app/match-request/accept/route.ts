@@ -41,6 +41,32 @@ export async function GET(request: NextRequest) {
             Authorization: `Bearer ${token}`
         }
     })
+
+    const responseReceiver = await api.get(`/user/${match.receiverId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+    const receiver = responseReceiver.data
+    
+    const responseRequester = await api.get(`/user/${match.requesterId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+    const requester = responseRequester.data
+
+    await api.post('/chat', {
+        receiverId: match.receiverId,
+        receiverEmail: receiver.email,
+        requesterId: match.requesterId,
+        requesterEmail: requester.email,
+        propertyName: 'nome do chat TEST'
+    }, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
     
     return NextResponse.redirect(redirectURL)
 }
