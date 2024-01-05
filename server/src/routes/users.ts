@@ -128,4 +128,27 @@ export async function usersRoutes(app: FastifyInstance) {
             return reply.status(401).send();
         }
     })   
+
+    // Cria um historico
+    app.post('/user/history', async (request) => {
+        await request.jwtVerify()
+
+        const historySchema = z.object({
+            userId: z.string(),
+            propertyId: z.string(),
+            isLiked: z.coerce.boolean().default(false),
+        })
+
+        const { userId, propertyId, isLiked } = historySchema.parse(request.body)
+    
+        const history = await prisma.userExplorerHistory.create({
+            data: {
+                userId,
+                propertyId,
+                isLiked,
+            },
+        })
+
+        return history
+    })
 }

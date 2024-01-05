@@ -3,6 +3,7 @@ import ImageCaroussel from '@/components/ImageCaroussel'
 import { api } from '@/lib/api';
 import { useState } from 'react'
 import Cookie from 'js-cookie'
+import { jwtDecode } from 'jwt-decode';
 
 interface ImageInfo {
     imageUrl: string;
@@ -31,18 +32,36 @@ interface ExplorerProps {
     properties: Property[];
   }
   
+
+
   const Explorer: React.FC<ExplorerProps> = ({ properties }) => {
     const [currentPropertyIndex, setCurrentPropertyIndex] = useState(0);
     const currentProperty = properties[currentPropertyIndex];
   
-    const handleNextProperty = () => {
+    // TODO
+    // mudar mais tarde para nao ser circular, ao chegar ao fim mostrar 'Sem imoveis' algo assim
+    const handleNextProperty = async (isLiked : Boolean) => {
       const nextIndex = (currentPropertyIndex + 1) % properties.length;
       setCurrentPropertyIndex(nextIndex);
+
+      const token = Cookie.get('token')!
+      const { sub } = jwtDecode(token)
+
+      await api.post('/user/history', {
+        userId: sub,
+        propertyId: currentProperty.id,
+        isLiked: isLiked,
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
     };
 
     async function handleMatchRequest() {
-      const token = Cookie.get('token')
-      
+      const token = Cookie.get('token')!
+      const { sub } = jwtDecode(token)
+
       const matchRequest = await api.post('/matchRequest', {
         receiverId: currentProperty.userId,
         propertyId: currentProperty.id,
@@ -52,8 +71,7 @@ interface ExplorerProps {
         }
       })
 
-
-      handleNextProperty()
+      handleNextProperty(true)
     }
   
     return (
@@ -62,7 +80,7 @@ interface ExplorerProps {
         <div className='w-1/2 flex flex-col'>
           <ImageCaroussel key={currentPropertyIndex} images={currentProperty.images} />
           <div className='text-pink-600 self-end'>
-            <button onClick={handleNextProperty} >Próximo Imóvel</button>
+            <button onClick={() => { handleNextProperty(false) }} >Próximo Imóvel</button>
             <button onClick={handleMatchRequest} className='ml-4'>Curtir</button>
           </div>
         </div>

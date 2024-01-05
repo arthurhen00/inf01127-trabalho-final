@@ -8,32 +8,35 @@ datasource db {
 }
 
 model User {
-  id         String     @id @default(uuid())
-  name       String
-  cpf        String     @unique
-  email      String     @unique
-  password   String
-  properties Property[]
+  id                  String                @id @default(uuid())
+  name                String
+  cpf                 String                @unique
+  email               String                @unique
+  password            String
+  properties          Property[]
+  UserExplorerHistory UserExplorerHistory[]
 }
 
 model Property {
-  id             String   @id @default(uuid())
-  name           String
-  zipcode        String
-  state          String
-  city           String
-  address        String
-  price          Float
-  propertyType   String
-  propertyNumber Int
-  numBedroom     Int
-  numBathroom    Int
-  description    String
-  createdAt      DateTime @default(now())
-  userId         String
-  user           User     @relation(fields: [userId], references: [id])
-  images         Image[]
-  Match          Match[]
+  id                  String                @id @default(uuid())
+  name                String
+  zipcode             String
+  state               String
+  city                String
+  address             String
+  price               Float
+  propertyType        String
+  propertyNumber      Int
+  numBedroom          Int
+  numBathroom         Int
+  description         String
+  createdAt           DateTime              @default(now())
+  userId              String
+  user                User                  @relation(fields: [userId], references: [id])
+  images              Image[]
+  Match               Match[]
+  UserExplorerHistory UserExplorerHistory[]
+  onSale              Boolean               @default(true)
 }
 
 model Image {
@@ -52,4 +55,14 @@ model Match {
   propertyId  String
   property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   matchStatus String
+}
+
+model UserExplorerHistory {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  isLiked    Boolean  @default(false)
 }

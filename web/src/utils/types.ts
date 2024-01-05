@@ -22,6 +22,7 @@ interface Property {
     description: string
     createdAt: string
     userId: string
+    onSale: Boolean
 }
 
 interface Image {
@@ -51,4 +52,5 @@ const MatchStatus = {
     pending: 'Pending',
     accept: 'Accept',
     reject: 'Reject',
+    complete: 'Complete',
 }

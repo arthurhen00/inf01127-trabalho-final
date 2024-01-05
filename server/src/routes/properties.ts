@@ -14,6 +14,7 @@ export async function propertiesRoutes(app: FastifyInstance) {
                 userId: {
                     not: request.user.sub,
                 },
+                onSale: true,
             },
             orderBy: {
                 createdAt: 'asc',
