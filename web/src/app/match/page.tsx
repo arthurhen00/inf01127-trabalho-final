@@ -69,9 +69,7 @@ export default async function MatchPage() {
                 <>
                 {/** Property info */}
                 <div className='flex flex-col'>
-                    {matches
-                    .filter(match => match.propertyData.onSale === true)
-                    .map((match : MatchData, index) => {
+                    {matches.map((match : MatchData, index) => {
                         return(
                             <div key={index}>
                                 <div className='flex flex-row'>

@@ -19,21 +19,6 @@ export async function GET(request: NextRequest) {
 
     const match : MatchRequest = response.data
 
-    /*await api.post('/match', {
-        requesterId: match.requesterId,
-        propertyId: match.propertyId,
-    }, {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    })
-
-    await api.delete(`/matchRequest/${id}`, {
-        headers: {
-            Authorization: `Bearer ${token}` 
-        }
-    })*/
-
     await api.put(`/matchRequest/${id}`, {
         status: 'Accept'
     }, {

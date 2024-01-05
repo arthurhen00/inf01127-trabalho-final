@@ -7,7 +7,7 @@ export async function matchRoutes(app: FastifyInstance) {
         await request.jwtVerify()
     })
 
-    // Create matchRequest
+    // Cria um request para o match
     app.post('/matchRequest', async (request) => {
         const userSchema = z.object({
             receiverId: z.string(),
@@ -28,7 +28,7 @@ export async function matchRoutes(app: FastifyInstance) {
         return matchRequest
     })
 
-    // List match Request
+    // Lista os request de match de um usuario
     app.get('/matchRequest', async (request) => {
         const matches = await prisma.match.findMany({
             where: {
@@ -43,7 +43,7 @@ export async function matchRoutes(app: FastifyInstance) {
         return matches
     })
 
-    // List match Request ID
+    // Lista um request para match
     app.get('/matchRequest/:id', async (request) => {
         const paramsSchema = z.object({
             id: z.string().uuid(),
@@ -60,52 +60,6 @@ export async function matchRoutes(app: FastifyInstance) {
         return match
     })
 
-    // Delete matchRequest
-    app.delete('/matchRequest/:id', async (request, reply) => {
-        const paramsSchema = z.object({
-            id: z.string().uuid(),
-        })
-
-        const { id } = paramsSchema.parse(request.params)
-
-        const matches = await prisma.match.findUniqueOrThrow({
-            where: {
-                id,
-            },
-        })
-
-        if (matches.receiverId != request.user.sub) {
-            return reply.status(401).send()
-        }
-
-        await prisma.match.delete({
-            where: {
-                id,
-            }
-        })
-    })
-
-    // Create match
-    app.post('/match', async (request) => {
-        const userSchema = z.object({
-            requesterId: z.string(),
-            propertyId: z.string(),
-        })
-
-        const { requesterId, propertyId } = userSchema.parse(request.body)
-        
-        const matchRequest = await prisma.match.create({
-            data: {
-                requesterId,
-                receiverId: request.user.sub,
-                propertyId,
-                matchStatus: 'Pending',
-            },
-        })
-
-        return matchRequest
-    })
-
     // List match
     app.get('/match', async (request) => {
         const matches = await prisma.match.findMany({
@@ -120,6 +74,7 @@ export async function matchRoutes(app: FastifyInstance) {
         return matches
     })
 
+    // Altera o status do match request, Accept | Reject
     app.put('/matchRequest/:id', async (request) => {
         const paramsSchema = z.object({
             id: z.string().uuid(),
@@ -145,17 +100,27 @@ export async function matchRoutes(app: FastifyInstance) {
         return match
     })
 
-    // Lista os mastchs aceitos, tanto das minhas props curtidas, quanto as que eu curti
+    // Lista os matches aceitos (validos, prop onSale === true), tanto das minhas props curtidas, quanto as que eu curti
     app.get('/matchAccept', async (request) => {
+        const validProperties = await prisma.property.findMany({
+            where: {
+                onSale: true,
+            },
+        })
+
+        const validPropertyIds = validProperties.map(property => property.id)
+
         const matches = await prisma.match.findMany({
             where: {
                 OR: [
                     {
                         receiverId: request.user.sub,
-                        matchStatus: 'Accept'
+                        matchStatus: 'Accept',
+                        propertyId: { in: validPropertyIds },
                     }, {
                         requesterId: request.user.sub,
-                        matchStatus: 'Accept'
+                        matchStatus: 'Accept',
+                        propertyId: { in: validPropertyIds },
                     }
                 ]
             },
