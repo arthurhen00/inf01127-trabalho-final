@@ -1,7 +1,9 @@
 import Header from "@/components/Header";
 import Menu from "@/components/Menu";
 import Unauthenticated from "@/components/Unauthenticated";
+import Unauthorized from "@/components/Unauthorized";
 import { api } from "@/lib/api";
+import { getUser } from "@/lib/auth";
 import { GetServerSidePropsContext } from "next";
 import { cookies } from "next/headers";
 
@@ -28,6 +30,7 @@ interface Image {
 
 export default async function PropertyDetails(context: GetServerSidePropsContext) {
   const isAuthenticated = cookies().has('token')
+  const { sub } = getUser()
 
   if (!isAuthenticated) {
     return (<Unauthenticated />)
@@ -43,6 +46,10 @@ export default async function PropertyDetails(context: GetServerSidePropsContext
   })
 
   const propertiesData : Property = propertyResponse.data
+
+  if( propertiesData.userId != sub ) {
+    return (<Unauthorized />)
+  }
 
   const imageResponse = await api.get(`/images/${propertyId}`, {
     headers: {
@@ -102,7 +109,10 @@ export default async function PropertyDetails(context: GetServerSidePropsContext
             </div>
             <div className="mb-2">
               <span className="text-base font-bold">Tipo do imóvel: </span>
-              <span>{property.propertiesData.propertyType}</span>
+              { property.propertiesData.propertyType === 'house' ?
+                <span>Casa</span>
+              :
+                <span>Apartamento</span> }
             </div>
             <div className="mb-2">
               <span className="text-base font-bold">Número: </span>

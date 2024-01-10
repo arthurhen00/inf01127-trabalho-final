@@ -122,11 +122,11 @@ export default async function MatchPage() {
                                             {
                                                 match.matchData.receiverId === sub ? 
                                                 <>
-                                                    <a href={``} className='ml-4 hover:text-gray-400'>Gerar contrato</a>
+                                                    <a href={`/match/contract/create/${match.matchData.id}`} className='ml-4 hover:text-gray-400'>Gerar contrato</a>
                                                 </> 
                                                 : 
                                                 <>
-                                                    <a href={``} className='ml-4 hover:text-gray-400'>Ler contrato</a>
+                                                    <a href={`/match/contract/read/${match.matchData.id}`} className='ml-4 hover:text-gray-400'>Ler contrato</a>
                                                 </>
                                             }
                                             

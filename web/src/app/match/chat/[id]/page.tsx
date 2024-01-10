@@ -23,8 +23,22 @@ export default async function ChatPage(context: GetServerSidePropsContext) {
     })
     const match = response.data
 
+    const responseReceiver = await api.get(`/user/${match.receiverId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+    const receiver = responseReceiver.data
+    
+    const responseRequester = await api.get(`/user/${match.requesterId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+    const requester = responseRequester.data
+
     return (
-        <ChatBox name={name} email={email} sub={sub} />
+        <ChatBox name={name} email={email} sub={sub} receiverEmail={receiver.email} requesterEmail={requester.email} />
     )
     
 }

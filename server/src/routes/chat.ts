@@ -14,10 +14,10 @@ export async function chatRoutes(app: FastifyInstance) {
             receiverEmail: z.string(),
             requesterId: z.string(),
             requesterEmail: z.string(),
-            propertyName: z.string(),
+            chatName: z.string(),
         })
 
-        const { receiverId, receiverEmail, requesterId, requesterEmail, propertyName } = chatSchema.parse(request.body)
+        const { receiverId, receiverEmail, requesterId, requesterEmail, chatName } = chatSchema.parse(request.body)
         
         // cria um usuario na api para o receiver
         try {
@@ -45,7 +45,7 @@ export async function chatRoutes(app: FastifyInstance) {
         try{
             const responseChatCreate = await axios.put(
                 'https://api.chatengine.io/chats/',
-                {usernames: [requesterEmail], title: 'Anúncio: ' + propertyName, is_direct_chat: true},
+                {usernames: [requesterEmail], title: chatName, is_direct_chat: true},
                 {headers: {
                     'project-id': 'f04be4f9-1a7c-4608-b794-a0d3c3bc0682',
                     'user-name': receiverEmail,

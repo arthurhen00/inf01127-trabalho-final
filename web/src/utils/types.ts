@@ -48,9 +48,28 @@ interface MatchData {
     matchData: MatchRequest
 }
 
+interface Contract {
+    id: string
+    matchId: string
+    contractType: string
+    price: number
+    contractStatus: string
+    createdAt: string
+}
+
 const MatchStatus = {
     pending: 'Pending',
     accept: 'Accept',
     reject: 'Reject',
+    complete: 'Complete',
+}
+
+const ContractType = {
+    rent: 'Rent',
+    sale: 'Sale',
+}
+
+const ContractStatus = {
+    pending: 'Pending',
     complete: 'Complete',
 }

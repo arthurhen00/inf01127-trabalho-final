@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
         receiverEmail: receiver.email,
         requesterId: match.requesterId,
         requesterEmail: requester.email,
-        propertyName: 'nome do chat TEST'
+        chatName: receiver.email + ', ' + requester.email
     }, {
         headers: {
             Authorization: `Bearer ${token}`

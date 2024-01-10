@@ -1,7 +1,7 @@
 'use client'
 
 import { api } from "@/lib/api"
-import { Camera, Image } from "lucide-react"
+import { Camera } from "lucide-react"
 import { ChangeEvent, FormEvent, useEffect, useState } from "react"
 import { FaRegEnvelope } from "react-icons/fa"
 import { IMaskInput } from "react-imask"
@@ -12,14 +12,13 @@ import { TiDelete } from "react-icons/ti"
 import Cookie from 'js-cookie'
 import { useRouter } from "next/navigation"
 
-export default function EditPropertyForm(props : { propertyId: string | string[] | undefined, token: string | undefined }) {
+export default function EditPropertyForm(props : { propertyId: string | string[] | undefined}) {
     const router = useRouter()
 
     const [property, setProperty] = useState<any>(null)
     const [previews, setPreviews] = useState<string[]>([])
     
     const [toRemove, setToRemove] = useState<{ imageToRemoveId: string; imageToRemoveExtension: string }[]>([]);
-
     
     useEffect(() => {
         const property = handlePropertyForm()
@@ -39,7 +38,7 @@ export default function EditPropertyForm(props : { propertyId: string | string[]
         const imageData = images.filter((obj : {imageUrl: string}) => obj !== imageToRemove)
         const propertyData = property.propertyData
 
-        const newProperty = {propertyData, imageData}
+        const newProperty : PropertyData = {propertyData, imageData}
 
         setProperty(newProperty)
 
@@ -55,16 +54,18 @@ export default function EditPropertyForm(props : { propertyId: string | string[]
 
     // Recebe as informacoes do formulario
     async function handlePropertyForm() {
+        const token = Cookie.get('token')
+
         const propertyResponse = await api.get(`/properties/${props.propertyId}`, {
             headers: {
-                Authorization: `Bearer ${props.token}`
+                Authorization: `Bearer ${token}`
             }
         })
         const propertyData = propertyResponse.data
         
         const imageResponse = await api.get(`/images/${props.propertyId}`, {
             headers: {
-                Authorization: `Bearer ${props.token}`
+                Authorization: `Bearer ${token}`
             }
         })
         const imageData = imageResponse.data
@@ -416,15 +417,24 @@ export default function EditPropertyForm(props : { propertyId: string | string[]
                                 <label className="text-sm text-gray-600 mb-1 ml-2">Quantidade de quartos</label>
                                 <div className="flex mb-2 py-2 ">
                                     <label className="bg-white w-1/3 flex items-center justify-center rounded-full">
-                                        <input type="radio" name="bedrooms" value="1" id="q1" />
+                                        { property.propertyData.numBedroom === 1 ?
+                                            <input defaultChecked type="radio" name="bedrooms" value="1" id="q1" />
+                                        :
+                                            <input type="radio" name="bedrooms" value="1" id="q1" /> }
                                         <span>1</span>
                                     </label>
                                     <label className="bg-white w-1/3 flex items-center justify-center rounded-full ml-3 mr-3">
-                                        <input type="radio" name="bedrooms" value="2" id="q2" />
+                                        { property.propertyData.numBedroom === 2 ?
+                                            <input defaultChecked type="radio" name="bedrooms" value="2" id="q2" />
+                                        :
+                                            <input type="radio" name="bedrooms" value="2" id="q2" /> }
                                         <span>2</span>
                                     </label>
                                     <label className="bg-white w-1/3 flex items-center justify-center rounded-full">
-                                        <input type="radio" name="bedrooms" value="3" id="q3" />
+                                        { property.propertyData.numBedroom === 3 ?
+                                            <input defaultChecked type="radio" name="bedrooms" value="3" id="q3" />
+                                        :
+                                            <input type="radio" name="bedrooms" value="3" id="q3" /> }
                                         <span>3+</span>
                                     </label>
                                 </div>
@@ -432,15 +442,25 @@ export default function EditPropertyForm(props : { propertyId: string | string[]
                                 <label className="text-sm text-gray-600 mb-1 ml-2">Quantidade de banheiros</label>
                                 <div className="flex mb-2 py-2 ">
                                     <label className="bg-white w-1/3 flex items-center justify-center rounded-full">
-                                        <input type="radio" name="bathrooms" value="1" id="b1"/>
+                                        { property.propertyData.numBathroom === 1 ? 
+                                            <input defaultChecked type="radio" name="bathrooms" value="1" id="b1"/> 
+                                        : 
+                                            <input type="radio" name="bathrooms" value="1" id="b1"/>}
+                                        
                                         <span>1</span>
                                     </label>
                                     <label className="bg-white w-1/3 flex items-center justify-center rounded-full ml-3 mr-3">
-                                        <input type="radio" name="bathrooms" value="2" id="b2" />
+                                        { property.propertyData.numBathroom === 2 ?
+                                            <input defaultChecked type="radio" name="bathrooms" value="2" id="b2" />
+                                        :
+                                            <input type="radio" name="bathrooms" value="2" id="b2" /> }
                                         <span>2</span>
                                     </label>
                                     <label className="bg-white w-1/3 flex items-center justify-center rounded-full">
-                                        <input type="radio" name="bathrooms" value="3" id="b3" />
+                                        { property.propertyData.numBathroom === 3 ?
+                                            <input defaultChecked type="radio" name="bathrooms" value="3" id="b3" />
+                                        :
+                                            <input type="radio" name="bathrooms" value="3" id="b3" /> }
                                         <span>3+</span>
                                     </label>
                                 </div>
@@ -466,7 +486,7 @@ export default function EditPropertyForm(props : { propertyId: string | string[]
                                     
                                 />  
                             </div>
-                            <div className='flex flex-wrap justify-center'>
+                            <div className='flex flex-wrap justify-start'>
                             {property.imageData.map((preview : {imageUrl: string, imageId: string}, index: number) => ( 
                                                             <div key={index} className="relative">
                                                                 <img
