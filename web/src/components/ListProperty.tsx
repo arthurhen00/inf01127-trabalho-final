@@ -30,7 +30,7 @@ export default async function ListProperty() {
     const propertyResponse = await api.get('/user/properties', {
         headers: {
             Authorization: `Bearer ${token}`
-        }
+        },
     })
     
     const propertiesData : Property[] = propertyResponse.data

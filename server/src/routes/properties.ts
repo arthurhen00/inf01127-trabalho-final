@@ -193,4 +193,124 @@ export async function propertiesRoutes(app: FastifyInstance) {
         })
     })
 
+    // Detalhe propriedade comprada, match, contrato
+    app.get('/properties/purchased', async (request) => {
+        const matches = await prisma.match.findMany({
+            where: {
+                requesterId: request.user.sub,
+                matchStatus: 'Complete'
+            }
+        })
+        const propertyIds = matches.map(match => match.propertyId)
+        const matchesIds = matches.map(match => match.id)
+        
+        const properties = await prisma.property.findMany({
+            where: {
+                id: {
+                    in: propertyIds,
+                }
+            }
+        })
+
+        const contracts = await prisma.contract.findMany({
+            where: {
+                matchId: {
+                    in: matchesIds,
+                }
+            }
+        })
+
+        const imagesPromises = properties.map(property => {
+            return prisma.image.findMany({
+                where: {
+                    propertyId: property.id,
+                },
+                select: {
+                    imageUrl: true,
+                    imageId: true,
+                },
+            })
+        })
+        const imagesData = await Promise.all(imagesPromises)
+
+        
+        
+        const combinedData = properties.map((property, index) => {
+            const match = matches.find(match => match.propertyId === property.id)
+            const contract = contracts.find(contract => contract.matchId === match?.id)
+            const propertyImages = imagesData[index]
+            
+            return {
+                propertyData: {
+                    ...property,
+                    images: propertyImages,
+                },
+                matchData: match,
+                contractData: contract,
+            }
+        })
+
+        return combinedData
+    })
+
+        // Detalhe propriedade vendida, match, contrato
+        app.get('/properties/sold', async (request) => {
+            const matches = await prisma.match.findMany({
+                where: {
+                    receiverId: request.user.sub,
+                    matchStatus: 'Complete'
+                }
+            })
+            const propertyIds = matches.map(match => match.propertyId)
+            const matchesIds = matches.map(match => match.id)
+            
+            const properties = await prisma.property.findMany({
+                where: {
+                    id: {
+                        in: propertyIds,
+                    }
+                }
+            })
+    
+            const contracts = await prisma.contract.findMany({
+                where: {
+                    matchId: {
+                        in: matchesIds,
+                    }
+                }
+            })
+    
+            const imagesPromises = properties.map(property => {
+                return prisma.image.findMany({
+                    where: {
+                        propertyId: property.id,
+                    },
+                    select: {
+                        imageUrl: true,
+                        imageId: true,
+                    },
+                })
+            })
+            const imagesData = await Promise.all(imagesPromises)
+    
+            
+            
+            const combinedData = properties.map((property, index) => {
+                const match = matches.find(match => match.propertyId === property.id)
+                const contract = contracts.find(contract => contract.matchId === match?.id)
+                const propertyImages = imagesData[index]
+                
+                return {
+                    propertyData: {
+                        ...property,
+                        images: propertyImages,
+                    },
+                    matchData: match,
+                    contractData: contract,
+                }
+            })
+    
+            return combinedData
+        })
+
 }

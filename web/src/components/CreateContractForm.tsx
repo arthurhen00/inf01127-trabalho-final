@@ -2,10 +2,12 @@
 
 import { api } from '@/lib/api'
 import Cookie from 'js-cookie'
+import { useRouter } from "next/navigation"
 import { FormEvent, useEffect, useState } from "react"
 import { IMaskInput } from "react-imask"
 
 export default function CreateContractForm(props : { property : Property, matchId : string | string[] | undefined }) {
+    const router = useRouter()
 
     const property = props.property
     const matchId = props.matchId
@@ -13,11 +15,7 @@ export default function CreateContractForm(props : { property : Property, matchI
     const [contract, setContract] = useState<Contract>()
 
     useEffect(() => {
-        const contract = handleContractForm()
-        
-        contract.then((res) => {
-            setContract(res)
-        })
+        handleContractForm()
     }, [])
 
     async function handleContractForm() {
@@ -30,11 +28,10 @@ export default function CreateContractForm(props : { property : Property, matchI
                 }
             })
             const contract = contractResponse.data
-            return contract
+            setContract(contract)
         } catch (e) {
             //
         }
-
     }
 
     async function submitContract(event: FormEvent<HTMLFormElement>) {
@@ -53,6 +50,7 @@ export default function CreateContractForm(props : { property : Property, matchI
             }
         })
         
+        router.push('/match')
     }
 
     return (

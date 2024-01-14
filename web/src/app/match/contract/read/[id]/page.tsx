@@ -11,6 +11,7 @@ import { getUser } from '@/lib/auth'
 export default async function ReadContractPage(context: GetServerSidePropsContext) {
   const isAuthenticated = cookies().has('token')
   const { sub } = getUser()
+  let hasContract = true
 
   if (!isAuthenticated) {
     return (<Unauthenticated />)
@@ -37,6 +38,18 @@ export default async function ReadContractPage(context: GetServerSidePropsContex
   })
   const property : Property = propertyResponse.data
 
+  let contract
+  try {
+    const contractResponse = await api.get(`/contract/match/${match.id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    contract = contractResponse.data
+  } catch (e) {
+    hasContract = false
+  }
+  
   return (
       <div className='flex flex-col h-screen bg-gray-100'>        
         <Header />
@@ -47,13 +60,21 @@ export default async function ReadContractPage(context: GetServerSidePropsContex
             <div className="flex flex-1 justify-between">
                 <h1>Anúncio: {property.name}{', '}{property.state}{' - R$ '}{property.price}</h1>
                 <div>
-                    <a href="/match" className="text-black hover:text-gray-500 hover:underline mr-4">Voltar</a>
-                    <a href={`a`} className="text-black hover:text-gray-500 hover:underline">Assinar</a>
+                    <a href="/match" className="text-black hover:text-gray-500 hover:underline">Voltar</a>
+                    { hasContract && (
+                      <a href={`/match/contract/read?id=${contract.id}`} className="ml-4 text-black hover:text-gray-500 hover:underline">Assinar</a>
+                    )
+                    }
+                    
                 </div>
                 </div>
             <div className="border-[1px] flex flex-1 border-gray-400 mb-2"></div>
 
-            <ShowContract property={property} matchId={matchId} />
+            { !hasContract ? (
+              <>O contrato para esse match ainda nao foi gerado.</>
+            ) : (
+              <ShowContract property={property} matchId={matchId} />
+            )}
         </main>
       </div>
   )

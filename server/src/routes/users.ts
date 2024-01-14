@@ -4,13 +4,34 @@ import { prisma } from '../lib/prisma'
 
 export async function usersRoutes(app: FastifyInstance) {
 
-    // Listar propriedades
+    // Listar propriedades a venda
     app.get('/user/properties', async (request, reply) => {
         await request.jwtVerify()
         try{
             const properties = await prisma.property.findMany({
                 where: {
                     userId: request.user.sub, // id do usuario autenticado
+                    onSale: true,
+                },
+                orderBy: {
+                    createdAt: 'asc',
+                },
+            })
+
+            return properties
+        }catch(e){
+            return reply.status(404).send();
+        }
+    })
+
+    // Listar propriedades vendidas
+    app.get('/user/sold/properties', async (request, reply) => {
+        await request.jwtVerify()
+        try{
+            const properties = await prisma.property.findMany({
+                where: {
+                    userId: request.user.sub, // id do usuario autenticado
+                    onSale: false,
                 },
                 orderBy: {
                     createdAt: 'asc',
@@ -46,14 +67,15 @@ export async function usersRoutes(app: FastifyInstance) {
         return user
     })
 
-    app.get('/users', async () => {
-        const users = await prisma.user.findMany({
-            orderBy: {
-                name: 'asc',
+    app.get('/user', async (request) => {
+        await request.jwtVerify()
+        const user = await prisma.user.findUniqueOrThrow({
+            where: {
+                id: request.user.sub,
             },
         })
 
-        return users
+        return user
     })
     
     app.post('/register', async (request, reply) => {

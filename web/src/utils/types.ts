@@ -39,6 +39,7 @@ interface User {
     id: string
     name: string
     email: string
+    cpf: string
 }
 
 interface MatchData {
@@ -55,6 +56,16 @@ interface Contract {
     price: number
     contractStatus: string
     createdAt: string
+}
+
+interface PropertyWithImages extends Property {
+    images: Image[]
+}
+
+interface NegotiatedProperty {
+    propertyData: PropertyWithImages
+    matchData: MatchRequest
+    contractData: Contract
 }
 
 const MatchStatus = {

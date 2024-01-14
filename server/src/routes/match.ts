@@ -276,11 +276,15 @@ export async function matchRoutes(app: FastifyInstance) {
             },
         })
 
-        const contract = await prisma.contract.findUniqueOrThrow({
+        const contract = await prisma.contract.findUnique({
             where: {
                 matchId: match.id,
             },
         })
+
+        if (!contract) {
+            return reply.status(401).send()
+        }
 
         if (!(match.receiverId === request.user.sub || match.requesterId === request.user.sub)) {
             return reply.status(401).send()
