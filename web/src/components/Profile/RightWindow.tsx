@@ -5,6 +5,9 @@ import ShowPurschasedProperties from './ShowPurchasedProperties'
 import ShowSoldProperties from './ShowSoldProperties'
 import { api } from '@/lib/api'
 import Cookie from 'js-cookie'
+import jsPDF from 'jspdf'
+import autoTable from 'jspdf-autotable'
+import dayjs from 'dayjs'
 
 type RightStatus = 'sold' | 'purchased'
 
@@ -41,9 +44,47 @@ export default function RightWindow() {
         setSoldProperties(soldProperties)
     }
 
+    function createPDF(data : NegotiatedProperty[]) {
+        const doc = new jsPDF()
+
+        doc.text('Relatório de ', 10, 10);
+        //doc.text('Vendas', 10, 30);
+
+        let body : any = []
+        for (const item of data) {
+            const rowData = ['v',
+                             'c',
+                             item.propertyData.name, 
+                             dayjs(item.propertyData.createdAt).format('D[/]MM[/]YY'),
+                             'R$ ' + item.propertyData.price, 
+                             dayjs(item.propertyData.createdAt).format('D[/]MM[/]YY'),
+                             'R$ ' + item.contractData.price,
+                            ]
+            body.push(rowData)
+        }
+
+        console.log(body)
+        
+        autoTable(doc, {
+            head: [['Vendedor',
+                    'Comprador',
+                    'Anúncio', 
+                    'Data de criação', 
+                    'Valor do anúncio',
+                    'Data de venda',
+                    'Valor acordado',
+                ]],
+            body: body,
+        })
+
+        const pdfBlob = doc.output('blob');
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        window.open(pdfUrl, '_blank');
+    }
+
     return (
         
-        <div className='px-4'>
+        <div className='px-4 flex flex-col flex-1'>
             {/** menu */}
             <div className='flex justify-between'>
                 <div className='flex justify-around flex-1'>
@@ -70,11 +111,31 @@ export default function RightWindow() {
                 </div>
             </div>
 
-            { rightStatus == 'purchased' && purchasedProperties  ? (
-                <ShowPurschasedProperties data={purchasedProperties} />
-            ) :  (
-                <ShowSoldProperties data={soldProperties}/>
-            )}
+            
+                { rightStatus == 'purchased' && purchasedProperties  ? (
+                    <>
+                        <ShowPurschasedProperties data={purchasedProperties} />
+                        <button 
+                            className='self-end'
+                            onClick={() => {createPDF(purchasedProperties)}}
+                        >
+                            Gerar relatorio de compra
+                        </button>
+                    </>
+                ) :  (
+                    <>
+                        <ShowSoldProperties data={soldProperties}/>
+                        <button 
+                            className='self-end'
+                            onClick={() => {createPDF(soldProperties)}}
+                        >
+                            Gerar relatorio de venda
+                        </button>
+                    </>
+                )}
+            
+
+            
             
         </div>
         

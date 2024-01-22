@@ -46,9 +46,16 @@ export default async function MatchPage() {
             })
             const userData = userResponse.data
 
+            const receiverResponse = await api.get(`/user/${match.receiverId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            const receiverData = receiverResponse.data
+
             const matchData = match
             
-            return { userData, propertyData, imageData, matchData }
+            return { userData, propertyData, imageData, matchData, receiverData }
         })
     )
 
@@ -104,7 +111,7 @@ export default async function MatchPage() {
                                     </div>
 
                                     <div className='flex flex-col justify-between flex-1'>
-                                        { match.matchData.receiverId === sub &&
+                                        { match.matchData.receiverId === sub ? (
                                         <div>
                                             <div className='text-lg font-bold'>
                                                 <span>Informações do interessado</span>
@@ -116,6 +123,19 @@ export default async function MatchPage() {
                                                 <span>Email: {match.userData.email}</span>
                                             </div>
                                         </div>
+                                        ) : (
+                                        <div>
+                                            <div className='text-lg font-bold'>
+                                                <span>Informações do vendedor</span>
+                                            </div>
+                                            <div>
+                                                <span>Nome: {match.receiverData.name}</span>
+                                            </div>
+                                            <div>
+                                                <span>Email: {match.receiverData.email}</span>
+                                            </div>
+                                        </div>
+                                        )
                                         }
                                         <div className='flex self-end h-full items-end'>
                                             <a href={`match/chat/${match.matchData.id}`} className='hover:text-gray-400'>Chat</a>

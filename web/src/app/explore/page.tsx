@@ -37,27 +37,6 @@ export default async function ExplorePage() {
       return (<Unauthenticated />)
     }
 
-    const propertyResponse = await api.get('/properties', {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    })
-
-    const propertiesData : Property[] = propertyResponse.data
-
-    const properties = await Promise.all(
-        propertiesData.map(async (property) => {
-          const imageResponse = await api.get(`/images/${property.id}`, {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          });
-          const images = imageResponse.data;
-          property.images = images;
-          return property;
-        })
-      );
-
   return(
     <div className='flex flex-col bg-gray-100 h-screen'>      
       <Header />
@@ -65,11 +44,7 @@ export default async function ExplorePage() {
         
       <main className='bg-gray-100 px-24 h-80 flex-1'>
           <h1 className='text-2xl font-bold mb-4'>Explorar</h1>
-          {propertiesData.length == 0 ?
-              <span>Desculpe, não encontramos nenhum imóvel.</span>
-            :
-              <Explorer properties={properties}/>
-          }
+          <Explorer/>
       </main>
     </div>
   )

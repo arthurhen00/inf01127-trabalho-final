@@ -47,6 +47,7 @@ interface MatchData {
     propertyData: Property
     imageData: Image[]
     matchData: MatchRequest
+    receiverData: User
 }
 
 interface Contract {

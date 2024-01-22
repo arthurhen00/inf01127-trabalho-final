@@ -44,9 +44,16 @@ export default async function MatchRequestPage() {
             })
             const userData = userResponse.data
 
+            const receiverResponse = await api.get(`/user/${match.receiverId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            const receiverData = receiverResponse.data
+
             const matchData = match
             
-            return { userData, propertyData, imageData, matchData }
+            return { userData, propertyData, imageData, matchData, receiverData }
         })
 
     )
