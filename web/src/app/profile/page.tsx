@@ -4,6 +4,7 @@ import LeftWindow from '@/components/Profile/LeftWindow'
 import RightWindow from '@/components/Profile/RightWindow'
 import Unauthenticated from '@/components/Unauthenticated'
 import { cookies } from 'next/headers'
+import { ToastContainer } from 'react-toastify'
 
 export default function ProfilePage() {
   const isAuthenticated = cookies().has('token')
@@ -13,7 +14,9 @@ export default function ProfilePage() {
   }
 
   return (
+    
     <div className='flex flex-col h-screen bg-gray-100'>        
+    <ToastContainer /> 
       <Header />
       <Menu />
 
@@ -23,11 +26,11 @@ export default function ProfilePage() {
         </div>
 
         <div className='flex'>
-          <div className='w-1/2 bg-yellow-100'>
+          <div className='w-1/2'>
             <LeftWindow />
           </div>
           
-          <div className='w-1/2 bg-green-50'>
+          <div className='w-1/2'>
             <RightWindow />
           </div>
         </div>

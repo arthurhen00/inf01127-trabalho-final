@@ -21,6 +21,7 @@ export default function LeftWindow() {
 
     function handleLeftWindow(status : LeftStatus) {
         setLeftStatus(status)
+        handleUser()
     }
 
     async function handleUser() {

@@ -233,11 +233,25 @@ export async function propertiesRoutes(app: FastifyInstance) {
         })
         const imagesData = await Promise.all(imagesPromises)
 
+        const sellers = await Promise.all(matches.map(match =>
+            prisma.user.findUnique({
+                where: {
+                    id: match.receiverId,
+                },
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                },
+            })
+        ))
+
         const combinedData = properties.map((property, index) => {
             const match = matches.find(match => match.propertyId === property.id)
             const contract = contracts.find(contract => contract.matchId === match?.id)
             const propertyImages = imagesData[index]
-            
+            const seller = sellers[index]
+
             return {
                 propertyData: {
                     ...property,
@@ -245,6 +259,7 @@ export async function propertiesRoutes(app: FastifyInstance) {
                 },
                 matchData: match,
                 contractData: contract,
+                sellerData: seller,
             }
         })
 
@@ -291,12 +306,24 @@ export async function propertiesRoutes(app: FastifyInstance) {
         })
         const imagesData = await Promise.all(imagesPromises)
 
-        
+        const sellers = await Promise.all(matches.map(match =>
+            prisma.user.findUnique({
+                where: {
+                    id: match.requesterId,
+                },
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                },
+            })
+        ))
         
         const combinedData = properties.map((property, index) => {
             const match = matches.find(match => match.propertyId === property.id)
             const contract = contracts.find(contract => contract.matchId === match?.id)
             const propertyImages = imagesData[index]
+            const seller = sellers[index]
             
             return {
                 propertyData: {
@@ -305,6 +332,7 @@ export async function propertiesRoutes(app: FastifyInstance) {
                 },
                 matchData: match,
                 contractData: contract,
+                sellerData: seller,
             }
         })
 

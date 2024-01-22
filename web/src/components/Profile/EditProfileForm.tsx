@@ -1,4 +1,8 @@
-import { useState } from "react"
+import { api } from "@/lib/api"
+import { FormEvent, useState } from "react"
+import Cookie from 'js-cookie'
+import Alert from "../Alert"
+import Success from "../Success"
 
 export default function EditProfileForm(props : {user : User | undefined, city : string[]}) {
     const user = props.user
@@ -17,8 +21,36 @@ export default function EditProfileForm(props : {user : User | undefined, city :
         setSelect(filtro);
     }
 
+    async function handleProfile (event: FormEvent<HTMLFormElement>) {
+        event.preventDefault()
+        const formData = new FormData(event.currentTarget)
+        const name = formData.get('name') as string | null
+        const email = formData.get('email') as string | null
+        const city = formData.get('city') as string | null
+
+        if (name?.length === 0) {
+            Alert('É necessário adicionar um nome!')
+            return
+        }
+
+        console.log(name, email, city)
+
+        const token = Cookie.get('token')
+        const newUser = await api.put(`/user/${user?.id}`, {
+            name: formData.get('name'),
+            email: formData.get('email'),
+            city: formData.get('city'),
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+
+        Success('Perfil alterado!')
+    }
+
     return (
-        <form>
+        <form onSubmit={handleProfile}>
             <div className="flex flex-col">
                 <label htmlFor="name" className="text-sm text-gray-600 ml-2">Nome</label>
                 <div className="bg-white w-64 p-2 flex items-center rounded-xl mb-2">
@@ -41,7 +73,7 @@ export default function EditProfileForm(props : {user : User | undefined, city :
                         placeholder="Nome" 
                         className="bg-white outline-none text-sm flex-1"
                         defaultValue={user?.email}
-                    ></input>
+                        ></input>
                 </div>
 
                 <label className="text-sm text-gray-600 mb-1 ml-2">CPF</label>
@@ -54,7 +86,7 @@ export default function EditProfileForm(props : {user : User | undefined, city :
                         className="bg-gray-50 outline-none text-sm flex-1 text-gray-400 cursor-not-allowed" 
                         tabIndex={-1}
                         defaultValue={user?.cpf}
-                    ></input>
+                        ></input>
                 </div>
                 
                 <label htmlFor="email" className="text-sm text-gray-600 ml-2">Cidade</label>
@@ -65,13 +97,15 @@ export default function EditProfileForm(props : {user : User | undefined, city :
                         onChange={handleInputChange}
                         placeholder="Digite para filtrar"
                         className="bg-white outline-none text-sm flex-1 ml-1"
-                    />
+                        />
                     <select 
-                        value={select} onChange={(e) => setSelect(e.target.value)}
+                        value={select} 
+                        onChange={(e) => setSelect(e.target.value)}
+                        name="city"
                         className="bg-white outline-none"
-                    >
+                        >
                         {options.map((opcao, index) => (
-                        <option  key={index} value={opcao}>
+                            <option  key={index} value={opcao}>
                             {opcao}
                         </option>
                         ))}

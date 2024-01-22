@@ -40,6 +40,7 @@ interface User {
     name: string
     email: string
     cpf: string
+    city: string
 }
 
 interface MatchData {
@@ -67,6 +68,7 @@ interface NegotiatedProperty {
     propertyData: PropertyWithImages
     matchData: MatchRequest
     contractData: Contract
+    sellerData: User
 }
 
 const MatchStatus = {

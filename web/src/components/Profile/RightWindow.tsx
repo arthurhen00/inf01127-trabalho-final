@@ -12,7 +12,7 @@ import dayjs from 'dayjs'
 type RightStatus = 'sold' | 'purchased'
 
 export default function RightWindow() {
-    const [rightStatus, setRightStatus] = useState<RightStatus>('sold')  
+    const [rightStatus, setRightStatus] = useState<RightStatus>('sold')
 
     function handleRightWindow(status : RightStatus) {
         setRightStatus(status)

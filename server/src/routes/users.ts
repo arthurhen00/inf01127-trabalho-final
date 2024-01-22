@@ -73,6 +73,13 @@ export async function usersRoutes(app: FastifyInstance) {
             where: {
                 id: request.user.sub,
             },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                cpf: true,
+                city: true,
+            }
         })
 
         return user
@@ -172,5 +179,56 @@ export async function usersRoutes(app: FastifyInstance) {
         })
 
         return history
+    })
+
+    app.put('/user/:id', async (request, reply) => {
+        await request.jwtVerify()
+        const paramsSchema = z.object({
+            id: z.string().uuid(),
+        })
+
+        const { id } = paramsSchema.parse(request.params)
+
+        const bodySchema = z.object({
+            name : z.string(),
+            email: z.string(),
+            city: z.string(),
+        })
+        const form = bodySchema.safeParse(request.body)
+        
+        if (!form.success) {
+            const { errors } = form.error;
+            
+            console.log(errors)
+            
+            return reply.status(400).send({
+                error: { message: "Invalid request", errors },
+            })
+        }
+        
+        const { name, email, city } = form.data
+        
+        let user = await prisma.user.findUniqueOrThrow({
+            where: {
+                id,
+            },
+        })
+        
+        if (user.id != request.user.sub) {
+            return reply.status(401).send()
+        }
+
+        user = await prisma.user.update({
+            where: {
+                id,
+            },
+            data: {
+                name,
+                email,
+                city,
+            },
+        })
+
+        return user
     })
 }

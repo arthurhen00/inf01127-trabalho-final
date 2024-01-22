@@ -20,8 +20,8 @@ export default function ShowPurschasedProperties(props : {data : NegotiatedPrope
                         <div className="flex flex-col ml-2">
                             <span>Nome: {property.propertyData.name}</span>
                             <span>Valor pago: {'R$ ' + property.contractData.price}</span>
-                            <span>Vendedor: {'email do cara'}</span>
-                            <a href="" className="hover:underline hover:cursor-pointer">Ver contrato</a>
+                            <span>Vendedor: {property.sellerData.email}</span>
+                            {/**<a href="" className="hover:underline hover:cursor-pointer">Ver contrato</a> */}
                         </div>
                     </div>
                 )

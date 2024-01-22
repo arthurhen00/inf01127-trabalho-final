@@ -21,7 +21,7 @@ export default function ShowProfileInfo(props : {user : User | undefined, city :
             
             <div>
               <span className="text-base font-bold">Cidade: </span>
-              <span>{user?.cpf}</span>
+              <span>{user?.city}</span>
             </div>
         </div>
     )
