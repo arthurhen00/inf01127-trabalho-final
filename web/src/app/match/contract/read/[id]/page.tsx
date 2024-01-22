@@ -58,7 +58,7 @@ export default async function ReadContractPage(context: GetServerSidePropsContex
         <main className='bg-gray-100 px-24'>
             {/** Menu info */}
             <div className="flex flex-1 justify-between">
-                <h1>Anúncio: {property.name}{', '}{property.state}{' - R$ '}{property.price}</h1>
+                <h1 className="text-2xl font-bold">Informações do contrato</h1>
                 <div>
                     <a href="/match" className="text-black hover:text-gray-500 hover:underline">Voltar</a>
                     { hasContract && (
