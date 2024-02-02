@@ -14,7 +14,7 @@ export async function propertiesRoutes(app: FastifyInstance) {
                 userId: {
                     not: request.user.sub,
                 },
-                onSale: true,
+                available: true,
             },
             orderBy: {
                 createdAt: 'asc',
@@ -60,7 +60,10 @@ export async function propertiesRoutes(app: FastifyInstance) {
             propertyNumber: z.number(),
             numBedroom: z.number(),
             numBathroom: z.number(),
+            adType : z.string().refine((value) => value === 'rent' || value === 'sale', { message: 'adType must be either "rent" or "sale"'}),
         })
+
+        console.log(request.body)
         
         const form = bodySchema.safeParse(request.body)
         
@@ -76,7 +79,8 @@ export async function propertiesRoutes(app: FastifyInstance) {
 
         const { name, cep, state, city, 
                 address, price, description, propertyType,
-                propertyNumber, numBedroom, numBathroom } = form.data;
+                propertyNumber, numBedroom, numBathroom, adType } = form.data;
+        
 
         const property = await prisma.property.create({
             data: {
@@ -92,6 +96,7 @@ export async function propertiesRoutes(app: FastifyInstance) {
                 numBedroom,
                 numBathroom,
                 userId: request.user.sub,
+                adType,
             },
         })
 
@@ -118,6 +123,7 @@ export async function propertiesRoutes(app: FastifyInstance) {
             propertyNumber: z.number(),
             numBedroom: z.number(),
             numBathroom: z.number(),
+            adType : z.string().refine((value) => value === 'rent' || value === 'sale', { message: 'adType must be either "rent" or "sale"'}),
         })
 
         const form = bodySchema.safeParse(request.body)
@@ -133,8 +139,8 @@ export async function propertiesRoutes(app: FastifyInstance) {
         }
 
         const { name, cep, state, city, 
-                address, price, description, propertyType,
-                propertyNumber, numBedroom, numBathroom } = form.data;
+            address, price, description, propertyType,
+            propertyNumber, numBedroom, numBathroom, adType } = form.data;
 
         let property = await prisma.property.findUniqueOrThrow({
             where: {
@@ -162,6 +168,7 @@ export async function propertiesRoutes(app: FastifyInstance) {
                 propertyNumber,
                 numBedroom,
                 numBathroom,
+                adType,
             },
         })
 

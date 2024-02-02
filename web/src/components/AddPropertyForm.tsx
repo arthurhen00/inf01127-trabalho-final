@@ -97,6 +97,7 @@ export default function AddPropertyForm () {
             propertyNumber: parseInt(formData.get('property-number')?.toString() ?? '0'),
             numBedroom: parseInt(formData.get('bedrooms')?.toString() ?? '0'),
             numBathroom: parseInt(formData.get('bathrooms')?.toString() ?? '0'),
+            adType: formData.get('ad-type'),
         }, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -185,7 +186,7 @@ export default function AddPropertyForm () {
     return  (
         <form onSubmit={handleProperty} id='property-form'>
             <div className='flex items-center mb-4'>
-                <h1 className='text-2xl font-bold'>Adicionar propriedade</h1>
+                <h1 className='text-2xl font-bold'>Adicionar imóvel</h1>
             </div>
 
             <div className='flex'>               
@@ -308,6 +309,16 @@ export default function AddPropertyForm () {
                                 <span>3+</span>
                             </label>
                         </div>
+
+                        <label htmlFor="ad-type" className="text-sm text-gray-600 mb-1 ml-2">Tipo de anúncio</label>
+                        <div className="bg-white w-52 p-2 flex items-center mb-3 rounded-xl">
+                            <select name="ad-type" id="ad-type" className="bg-white outline-none text-sm flex-1">
+                                <option value="rent">Aluguel</option>
+                                <option value="sale">Venda</option>
+                            </select>
+                        </div>
+
+                        
 
                     </div>
                 </div>

@@ -37,7 +37,8 @@ model Property {
   images              Image[]
   Match               Match[]
   UserExplorerHistory UserExplorerHistory[]
-  onSale              Boolean               @default(true)
+  available           Boolean               @default(true)
+  adType              String               @default("sale") 
 }
 
 model Image {

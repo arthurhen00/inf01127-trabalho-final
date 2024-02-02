@@ -101,7 +101,7 @@ export async function matchRoutes(app: FastifyInstance) {
     app.get('/matchAccept', async (request) => {
         const validProperties = await prisma.property.findMany({
             where: {
-                onSale: true,
+                available: true,
             },
         })
 
@@ -219,7 +219,7 @@ export async function matchRoutes(app: FastifyInstance) {
                 id: match.propertyId,
             },
             data: {
-                onSale: false,
+                available: false,
             },
         })
 

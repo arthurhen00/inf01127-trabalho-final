@@ -87,6 +87,7 @@ export default function EditPropertyForm(props : { propertyId: string | string[]
         const propertyNumber = formData.get('property-number')
         const numBedroom = formData.get('bedrooms')
         const numBathroom = formData.get('bathrooms')
+        
 
         let valid = true
         if (!name || name.toString().trim().length === 0) {
@@ -156,6 +157,7 @@ export default function EditPropertyForm(props : { propertyId: string | string[]
             propertyNumber: parseInt(formData.get('property-number')?.toString() ?? '0'),
             numBedroom: parseInt(formData.get('bedrooms')?.toString() ?? '0'),
             numBathroom: parseInt(formData.get('bathrooms')?.toString() ?? '0'),
+            adType: formData.get('ad-type'),
         }, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -463,6 +465,23 @@ export default function EditPropertyForm(props : { propertyId: string | string[]
                                             <input type="radio" name="bathrooms" value="3" id="b3" /> }
                                         <span>3+</span>
                                     </label>
+
+
+                                    
+
+                                </div>
+
+                                <label htmlFor="ad-type" className="text-sm text-gray-600 mb-1 ml-2">Tipo de anúncio</label>
+                                    <div className="bg-white w-52 p-2 flex items-center mb-3 rounded-xl">
+                                        <select 
+                                        name="ad-type" 
+                                        id="ad-type" 
+                                        className="bg-white outline-none text-sm flex-1"
+                                        defaultValue={property.propertyData.adType}
+                                        >
+                                            <option value="rent">Aluguel</option>
+                                            <option value="sale">Venda</option>
+                                        </select>
                                 </div>
 
                             </div>

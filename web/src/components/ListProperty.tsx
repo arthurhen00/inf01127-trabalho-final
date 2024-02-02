@@ -22,7 +22,13 @@ interface Property {
     description: string
     createdAt: string
     userId: string
+    adType: string
 }
+
+const brlFormmater = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+});
 
 export default async function ListProperty() {
     const token = cookies().get('token')?.value
@@ -43,10 +49,12 @@ export default async function ListProperty() {
             }
           })
           const images = imageResponse.data
-    
           return { property, images }
         })
+
     )
+
+    console.log(properties)
 
     return(
         <>
@@ -65,7 +73,10 @@ export default async function ListProperty() {
                                 alt=''
                                 className='h-[280px] w-[420px] rounded-lg object-cover'
                             />
-                            <span className='flex items-center text-black text-2xl'>{property.property.name}</span>
+                            <div className='flex justify-between text-black'>
+                                <span className='text-2xl'>{property.property.name}</span>
+                                <div className='flex align items-end'>{brlFormmater.format(property.property.price)} - {property.property.adType === 'sale' ? 'Venda' : 'Aluguel'}</div>
+                            </div>
                             <div className='flex flex-row items-center text-sm text-black justify-between'>
                                 <div>
                                     <span>{property.property.city}</span>
