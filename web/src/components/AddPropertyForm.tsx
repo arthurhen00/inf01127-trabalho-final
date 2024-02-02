@@ -212,21 +212,21 @@ export default function AddPropertyForm () {
                         </div>
 
                         <label className="text-sm text-gray-600 mb-1 ml-2">Estado</label>
-                        <div className="bg-gray-50 w-64 p-2 flex items-center mb-3 rounded-xl">
+                        <div className="bg-white w-64 p-2 flex items-center mb-3 rounded-xl">
                             <FaRegEnvelope className="text-gray-400 mr-2" />
-                            <input type="text" name="state" placeholder="Estado" readOnly className="bg-gray-50 outline-none text-sm flex-1 text-gray-400 cursor-not-allowed" tabIndex={-1}></input>
+                            <input type="text" name="state" placeholder="Estado" className="outline-none text-sm flex-1 " tabIndex={-1}></input>
                         </div>
 
                         <label className="text-sm text-gray-600 mb-1 ml-2">Cidade</label>
-                        <div className="bg-gray-50 w-64 p-2 flex items-center mb-3 rounded-xl">
+                        <div className="bg-white w-64 p-2 flex items-center mb-3 rounded-xl">
                             <FaRegEnvelope className="text-gray-400 mr-2" />
-                            <input type="text" name="city" placeholder="Cidade" readOnly className="bg-gray-50 outline-none text-sm flex-1 text-gray-400 cursor-not-allowed" tabIndex={-1}></input>
+                            <input type="text" name="city" placeholder="Cidade" className="outline-none text-sm flex-1 " tabIndex={-1}></input>
                         </div>
 
                         <label className="text-sm text-gray-600 mb-1 ml-2">Endereço</label>
-                        <div className="bg-gray-50 w-64 p-2 flex items-center mb-3 rounded-xl">
+                        <div className="bg-white w-64 p-2 flex items-center mb-3 rounded-xl">
                             <FaRegEnvelope className="text-gray-400 mr-2" />
-                            <input type="text" name="address" placeholder="Rua" readOnly className="bg-gray-50 outline-none text-sm flex-1 text-gray-400 cursor-not-allowed" tabIndex={-1}></input>
+                            <input type="text" name="address" placeholder="Rua" className=" outline-none text-sm flex-1" tabIndex={-1}></input>
                         </div>
 
                         <label htmlFor="price" className="text-sm text-gray-600 mb-1 ml-2">Valor</label>
