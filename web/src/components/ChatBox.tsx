@@ -8,7 +8,7 @@ export default function ChatBox(props: { name: string,
                                          sub: string, 
                                          receiverEmail: string, 
                                          requesterEmail: string }) {
-    const chatProps = useMultiChatLogic('f04be4f9-1a7c-4608-b794-a0d3c3bc0682', props.email, props.sub)
+    const chatProps = useMultiChatLogic('fdc9b408-5d6b-4438-8afc-3cb503659193', props.email, props.sub)
 
     return (
         <>
@@ -20,7 +20,7 @@ export default function ChatBox(props: { name: string,
                 <div className='h-screen'>
                     <a href='/match' className='ml-20 text-xl'>Voltar</a>
                         <PrettyChatWindow
-                        projectId="f04be4f9-1a7c-4608-b794-a0d3c3bc0682"
+                        projectId="fdc9b408-5d6b-4438-8afc-3cb503659193"
                         username={props.email}
                         secret={props.sub}
                         style={{ height: '100vh' }}

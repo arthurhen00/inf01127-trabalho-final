@@ -62,7 +62,7 @@ export async function propertiesRoutes(app: FastifyInstance) {
             numBedroom: z.number(),
             numBathroom: z.number(),
             adType : z.string().refine((value) => value === 'rent' || value === 'sale', { message: 'adType must be either "rent" or "sale"'}),
-            numParkingSpots: z.number(),
+            parkingSpacesQtd: z.number(),
             size: z.number()
         })
 
@@ -82,7 +82,7 @@ export async function propertiesRoutes(app: FastifyInstance) {
 
         const { name, cep, state,district, city, 
                 address, price, description, propertyType,
-                propertyNumber, numBedroom, numBathroom, adType } = form.data;
+                propertyNumber, numBedroom, numBathroom, adType, parkingSpacesQtd, size } = form.data;
         
 
         const property = await prisma.property.create({
@@ -101,9 +101,8 @@ export async function propertiesRoutes(app: FastifyInstance) {
                 numBathroom,
                 userId: request.user.sub,
                 adType,
-                numParkingSpots,
+                numParkingSpots: parkingSpacesQtd,
                 size,
-
             },
         })
 
