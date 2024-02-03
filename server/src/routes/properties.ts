@@ -52,6 +52,7 @@ export async function propertiesRoutes(app: FastifyInstance) {
             name : z.string(),
             cep: z.string(),
             state: z.string(),
+            district: z.string(),
             city: z.string(),
             address: z.string(),
             price: z.number(),
@@ -61,6 +62,8 @@ export async function propertiesRoutes(app: FastifyInstance) {
             numBedroom: z.number(),
             numBathroom: z.number(),
             adType : z.string().refine((value) => value === 'rent' || value === 'sale', { message: 'adType must be either "rent" or "sale"'}),
+            numParkingSpots: z.number(),
+            size: z.number()
         })
 
         console.log(request.body)
@@ -77,7 +80,7 @@ export async function propertiesRoutes(app: FastifyInstance) {
             })
         }
 
-        const { name, cep, state, city, 
+        const { name, cep, state,district, city, 
                 address, price, description, propertyType,
                 propertyNumber, numBedroom, numBathroom, adType } = form.data;
         
@@ -88,6 +91,7 @@ export async function propertiesRoutes(app: FastifyInstance) {
                 zipcode: cep,
                 state,
                 city,
+                district,
                 address,
                 price,
                 description,
@@ -97,6 +101,9 @@ export async function propertiesRoutes(app: FastifyInstance) {
                 numBathroom,
                 userId: request.user.sub,
                 adType,
+                numParkingSpots,
+                size,
+
             },
         })
 

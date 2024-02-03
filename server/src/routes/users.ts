@@ -31,7 +31,7 @@ export async function usersRoutes(app: FastifyInstance) {
             const properties = await prisma.property.findMany({
                 where: {
                     userId: request.user.sub, // id do usuario autenticado
-                    onSale: false,
+                    available: false,
                 },
                 orderBy: {
                     createdAt: 'asc',
