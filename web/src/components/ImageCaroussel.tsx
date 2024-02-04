@@ -8,9 +8,21 @@ interface ImageInfo {
 	imageId: string;
 }
 
-export default class ImageCaroussel extends Component<{ images: ImageInfo[] | undefined }> {
+interface ImageCarousselProps {
+	images: ImageInfo[] | undefined;
+	customClassName?: string;
+	autoPlay?: boolean
+	showArrows?: boolean
+  }
+
+const defaultProps: Partial<ImageCarousselProps> = {
+	autoPlay: false,
+	showArrows: true,
+};
+
+export default class ImageCaroussel extends Component<ImageCarousselProps> {
 render() {
-	const { images } = this.props;
+	const { images, customClassName, autoPlay, showArrows} = this.props;
 	if (!images || images.length === 0) {
 		return <p>No images to display.</p>;
 	}
@@ -19,12 +31,15 @@ render() {
 					showStatus={false} 
 					infiniteLoop={true} 
 					showThumbs={false} 
-					dynamicHeight = {true}
+					dynamicHeight = {false}
 					useKeyboardArrows = {true}
+					autoPlay={autoPlay}
+					showArrows={showArrows}
+					className='h-full w-full'
 					>
 		{images.map(({ imageUrl, imageId }, index) => (
-			<div key={index}>
-				<img src={imageUrl} alt={`image${index + 1}`} className='h-[360px] w-[640px] rounded-lg object-cover'/>
+			<div key={index} className='h-full w-full'>
+				<img src={imageUrl} alt={`image${index + 1}`} className={`${customClassName}`}/>
 			</div>
 		))}
 		</Carousel>

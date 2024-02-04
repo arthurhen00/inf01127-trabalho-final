@@ -95,6 +95,13 @@ export async function uploadRoutes(app: FastifyInstance) {
         return image
     })
 
+    app.get('/images/list', async (request) => {
+        await request.jwtVerify()
+        const images = await prisma.image.findMany()
+        return  images
+    })
+
+
     // deleta todas as imagens de uma propriedade ID
     app.delete('/images/:id', async (request) => {
         await request.jwtVerify()

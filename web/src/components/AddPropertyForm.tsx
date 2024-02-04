@@ -134,7 +134,7 @@ export default function AddPropertyForm () {
             numBedroom: parseInt(formData.get('bedrooms')?.toString() ?? '0'),
             numBathroom: parseInt(formData.get('bathrooms')?.toString() ?? '0'),
             adType: formData.get('ad-type'),
-            parkingSpacesQtd : parseInt(formData.get('parking-space-qtd')?.toString() ?? '0'),
+            parkingSpaceQtd : parseInt(formData.get('parking-space-qtd')?.toString() ?? '0'),
             size : parseInt(formData.get('square-meters')?.toString() ?? '0'),
         }, {
             headers: {
@@ -142,6 +142,7 @@ export default function AddPropertyForm () {
             },
         })
 
+        
         const propertyId = property.data.id
         
         // Upload dos arquivos
@@ -383,8 +384,9 @@ export default function AddPropertyForm () {
                                 name="parking-space-qtd"
                                 id="parking-space-qtd"
                                 className="bg-white outline-none text-sm min-w-0"   
-                                placeholder="0" />
-                                
+                                placeholder="0" 
+                                defaultValue={0}/>
+                        
                             </div>
                         </div>
 

@@ -298,15 +298,15 @@ const Explorer: React.FC = () => {
           <span>Desculpe, não encontramos nenhum imóvel.</span>
         :
           <div className='flex justify-center'>
-            <div className='w-2/5 flex flex-col max-w-[1200px]'>
-              <ImageCaroussel key={currentPropertyIndex} images={currentProperty.images} />
+            <div className='w-2/4 flex flex-col max-w-[1200px]'>
+                <ImageCaroussel key={currentPropertyIndex} images={currentProperty.images} customClassName='rounded-lg object-cover h-[360px]  ' autoPlay = {false}/>
               <div className='text-pink-600 self-center'>
                 <button onClick={() => { handleNextProperty(false) }} >Próximo Imóvel</button>
                 <button onClick={handleMatchRequest} className='ml-4'>Curtir</button>
               </div>
             </div>
 
-            <div className='flex flex-col text-sm items-start w-1/5 pl-4'>
+            <div className='flex flex-col text-sm items-start w-1/4 pl-4'>
               <div className="mb-2 text-lg">
                 <span>{currentProperty.district}</span>
                 {', '}
@@ -352,7 +352,7 @@ const Explorer: React.FC = () => {
 
               <div className="mb-2">
                 {currentProperty.adType === 'sale' ? <span>{currentProperty.propertyType === 'house' ? 'Casa' : 'Apartamento'} à venda por:  </span> : <span>Aluguel</span>}
-                <span>R$ </span>
+                <span>: R$ </span>
                 <span>{currentProperty.price}</span>
               </div>
 
