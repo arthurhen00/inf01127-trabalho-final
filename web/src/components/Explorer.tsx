@@ -43,7 +43,13 @@ const Explorer: React.FC = () => {
   const [city, setCity] = useState<string[]>([])
   const [currentPropertyIndex, setCurrentPropertyIndex] = useState(0);
   const [currentProperty, setCurrentProperty] = useState<Property>(properties[0]);
+  const [showParkingSpaces , setShowParkingSpaces] = useState(false);
+  const [numSpots, setNumSpots] = useState('0');
 
+  function handleHasGarageChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    const value = event.target.value;
+    setShowParkingSpaces(value === 'yes');
+  }
   // Propriedades iniciais
   async function handleProperties() {
     const token = Cookie.get('token')
@@ -107,12 +113,17 @@ const Explorer: React.FC = () => {
     const minValue = formData.get('minValue') as string | null
     const maxValue = formData.get('maxValue') as string | null
     const city = formData.get('city') as string | null
+    const propertyType = formData.get('property-type') as string | null
+    const adType = formData.get('ad-type') as string | null
+    const numParkingSpots = formData.get('numSpots') as string | null
+    const hasParkingSpaces = formData.get('has-parking-space') as string | null
 
     // Converte os valores para números, se existirem
     const parsedNumBedRoom = numBedRoom ? parseInt(numBedRoom, 10) : undefined
     const parsedNumBathRoom = numBathRoom ? parseInt(numBathRoom, 10) : undefined
     const parsedMinValue = minValue ? parseFloat(minValue) : undefined
     const parsedMaxValue = maxValue ? parseFloat(maxValue) : undefined
+    const parsedNumParkingSpots = numParkingSpots ? parseInt(numParkingSpots, 10) : undefined
 
     const token = Cookie.get('token')
     const propertyResponse = await api.get('/properties', {
@@ -142,7 +153,11 @@ const Explorer: React.FC = () => {
         (!parsedNumBathRoom || property.numBathroom === parsedNumBathRoom) &&
         (!parsedMinValue || property.price >= parsedMinValue) &&
         (!parsedMaxValue || property.price <= parsedMaxValue) &&
-        (!city || property.city == city)
+        (!city || property.city == city) &&
+        ((!propertyType || property.propertyType == propertyType)  || "any" == propertyType) &&
+        ((!adType || property.adType == adType) || "any" == adType) &&
+        ((!parsedNumParkingSpots || property.numParkingSpots === parsedNumParkingSpots) || "yes" != hasParkingSpaces) &&
+        (property.numParkingSpots === 0 || "no" != hasParkingSpaces)
       )
     })
 
@@ -169,7 +184,6 @@ const Explorer: React.FC = () => {
       }
     })
   };
-
   // Curtir uma propriedade
   async function handleMatchRequest() {
     const token = Cookie.get('token')
@@ -257,11 +271,63 @@ const Explorer: React.FC = () => {
             </div>
           </div>
         </div>
-
         <div className='mr-2'>
           <div className='bg-white rounded-xl flex items-center justify-between'>
+            <label htmlFor="property-type" className="text-sm text-gray-600 ml-2">Tipo do imóvel:</label>
+            <div className="w-36 p-2 flex items-center ">
+              <select name="property-type" id="property-type" className="bg-white outline-none text-sm flex-1">
+                  <option value="any"></option>
+                  <option value="house">Casa</option>
+                  <option value="apartment">Apartamento</option>
+              </select>
+            </div>
+          </div>
+          <div className='bg-white rounded-xl flex items-center justify-between'>
+            <label htmlFor="ad-type" className="text-sm text-gray-600 ml-2">Tipo de anúncio:</label>
+            <div className="w-36 p-2 flex items-center ">
+                <select name="ad-type" id="ad-type" className="bg-white outline-none text-sm flex-1">
+                    <option value="any"></option>
+                    <option value="rent">Aluguel</option>
+                    <option value="sale">Venda</option>
+                </select>
+            </div>
+          </div>
+        </div> 
+        <div className='mr-2'>
+          <div className='bg-white rounded-xl flex items-center justify-between'>
+            <label htmlFor="has-parking-space" className="text-sm text-gray-600 ml-2">Possui garagem:</label>
+            <div className="w-12 p-2 flex items-center ">
+                <select 
+                    name="has-parking-space" id="has-parking-space" 
+                    className="bg-white outline-none text-sm flex-1"
+                    onChange={handleHasGarageChange}>
+                    <option value="any">Qualquer</option>
+                    <option value="no">Não</option>
+                    <option value="yes">Sim</option>
+                </select>
+            </div>
+          </div>
+          <div className='bg-white rounded-xl flex items-center justify-between'>
+            <div id="parking-spaces-c ontainer" className={showParkingSpaces ? '' : 'hidden'}>
+              <div className='bg-white rounded-xl flex items-center justify-between'>
+                <label htmlFor="numSpots" className="text-sm text-gray-600 ml-2">Numero de Slots:</label>
+                <div className="w-2 p-2 flex items-center ">
+                <IMaskInput
+                    mask={Number}
+                    radix="."
+                    name="numSpots"
+                    id="numSpots"
+                    className="bg-white outline-none text-sm w-20"
+                />
+                </div>
+              </div>
+            </div>
+          </div>  
+        </div>        
+        <div className='mr-2 px-8'>
+          <div className='bg-white rounded-xl flex items-center justify-between'>
             <label htmlFor="minValue" className="text-sm text-gray-600 ml-2">Valor Mínimo:</label>
-            <div className="w-24 p-2 flex items-center ">
+            <div className="w-24 p-2 flex items-center">
             <IMaskInput
                 mask={Number}
                 radix="."
@@ -298,15 +364,15 @@ const Explorer: React.FC = () => {
           <span>Desculpe, não encontramos nenhum imóvel.</span>
         :
           <div className='flex justify-center'>
-            <div className='w-2/4 flex flex-col max-w-[1200px]'>
-                <ImageCaroussel key={currentPropertyIndex} images={currentProperty.images} customClassName='rounded-lg object-cover h-[360px]  ' autoPlay = {false}/>
+            <div className='w-2/5 flex flex-col max-w-[1200px]'>
+              <ImageCaroussel key={currentPropertyIndex} images={currentProperty.images} />
               <div className='text-pink-600 self-center'>
                 <button onClick={() => { handleNextProperty(false) }} >Próximo Imóvel</button>
                 <button onClick={handleMatchRequest} className='ml-4'>Curtir</button>
               </div>
             </div>
 
-            <div className='flex flex-col text-sm items-start w-1/4 pl-4'>
+            <div className='flex flex-col text-sm items-start w-1/5 pl-4'>
               <div className="mb-2 text-lg">
                 <span>{currentProperty.district}</span>
                 {', '}
@@ -352,7 +418,7 @@ const Explorer: React.FC = () => {
 
               <div className="mb-2">
                 {currentProperty.adType === 'sale' ? <span>{currentProperty.propertyType === 'house' ? 'Casa' : 'Apartamento'} à venda por:  </span> : <span>Aluguel</span>}
-                <span>: R$ </span>
+                <span>R$ </span>
                 <span>{currentProperty.price}</span>
               </div>
 
