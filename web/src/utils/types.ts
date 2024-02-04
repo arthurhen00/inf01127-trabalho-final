@@ -22,7 +22,7 @@ interface Property {
     description: string
     createdAt: string
     userId: string
-    onSale: Boolean
+    available: Boolean
 }
 
 interface Image {

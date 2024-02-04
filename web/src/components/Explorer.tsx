@@ -17,21 +17,25 @@ interface ImageInfo {
 }
 
 interface Property {
-    id: string
-    name: string
-    zipcode: string
-    state: string
-    city: string
-    address: string
-    price: number
+    id: string,
+    name: string,
+    zipcode: string,
+    state: string,
+    city: string,
+    district: string,
+    address: string,
+    price: number,
     propertyType: string,
     propertyNumber: number,
     numBedroom: number,
     numBathroom: number,
-    description: string
-    createdAt: string
-    userId: string
-    images?: ImageInfo[]
+    numParkingSpots: number,
+    adType : string,
+    size: number,
+    description: string,
+    createdAt: string,
+    userId: string,
+    images?: ImageInfo[],
 }
   
 const Explorer: React.FC = () => {
@@ -63,6 +67,7 @@ const Explorer: React.FC = () => {
         return property;
       })
     )
+    console.log(properties)
     setProperties(properties)
     setCurrentProperty(properties[currentPropertyIndex])
   }
@@ -292,18 +297,18 @@ const Explorer: React.FC = () => {
         properties.length == 0 ?
           <span>Desculpe, não encontramos nenhum imóvel.</span>
         :
-          <>
-            <div className='w-1/2 flex flex-col'>
+          <div className='flex justify-center'>
+            <div className='w-2/5 flex flex-col max-w-[1200px]'>
               <ImageCaroussel key={currentPropertyIndex} images={currentProperty.images} />
-              <div className='text-pink-600 self-end'>
+              <div className='text-pink-600 self-center'>
                 <button onClick={() => { handleNextProperty(false) }} >Próximo Imóvel</button>
                 <button onClick={handleMatchRequest} className='ml-4'>Curtir</button>
               </div>
             </div>
 
-            <div className='flex flex-col w-1/2 text-sm items-center'>
+            <div className='flex flex-col text-sm items-start w-1/5 pl-4'>
               <div className="mb-2 text-lg">
-                <span>{currentProperty.name}</span>
+                <span>{currentProperty.district}</span>
                 {', '}
                 <span>{currentProperty.city}</span>
                 {' - '}
@@ -311,28 +316,52 @@ const Explorer: React.FC = () => {
               </div>
 
               <div className="mb-2">
+                <span>{currentProperty.address}</span>
+                {' - n° '}
+                <span>{currentProperty.propertyNumber}</span>
+              </div>
+
+
+              <div className="mb-2">
                 {currentProperty.propertyType === 'house' ? <span>Casa</span> : <span>Apartamento</span>}
-                {' . '}
+                {' com '}
+                <span>{currentProperty.size} m²</span>
+              </div>
+
+              <div className="mb-2">
                 {currentProperty.numBedroom > 1 ?
                   <span>{currentProperty.numBedroom} quartos</span> :
                   <span>{currentProperty.numBedroom} quarto</span>
                 }
-                {' . '}
+              </div>
+
+              <div className="mb-2">
                 {currentProperty.numBathroom > 1 ?
                   <span>{currentProperty.numBathroom} banheiros</span> :
                   <span>{currentProperty.numBathroom} banheiro</span>
                 }
-                {' - '}
+              </div>
+
+              {
+              currentProperty.numParkingSpots > 0 && 
+              <div className="mb-2">
+                <span>{currentProperty.numParkingSpots} vagas na garagem</span>
+              </div>
+                }
+
+
+              <div className="mb-2">
+                {currentProperty.adType === 'sale' ? <span>{currentProperty.propertyType === 'house' ? 'Casa' : 'Apartamento'} à venda por:  </span> : <span>Aluguel</span>}
                 <span>R$ </span>
                 <span>{currentProperty.price}</span>
               </div>
 
               <div className="mb-2 text-justify">
-                <span>{currentProperty.description}</span>
+                <span className='overflow-scroll'>{currentProperty.description}</span>
               </div>
                         
             </div>
-          </>
+          </div>
       }
 
     </div>

@@ -3,9 +3,11 @@ import { cookies } from 'next/headers'
 import EmptyPropertyList from './EmptyPropertyList'
 import Image from 'next/image'
 import dayjs from 'dayjs'
-
 import { CiSearch, CiEdit } from "react-icons/ci"
 import { MdDeleteOutline } from "react-icons/md"
+
+require('dayjs/locale/pt')
+dayjs.locale('pt')
 
 interface Property {
     id: string

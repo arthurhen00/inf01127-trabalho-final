@@ -117,7 +117,7 @@ export async function matchRoutes(app: FastifyInstance) {
         return match
     })
 
-    // Lista os matches aceitos (validos, prop onSale === true), tanto das minhas props curtidas, quanto as que eu curti
+    // Lista os matches aceitos (validos, prop available === true), tanto das minhas props curtidas, quanto as que eu curti
     app.get('/matchAccept', async (request) => {
         const validProperties = await prisma.property.findMany({
             where: {

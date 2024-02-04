@@ -23,14 +23,17 @@ model Property {
   name                String
   zipcode             String
   state               String
+  district            String                         
   city                String
   address             String
-  price               Float
+  price               Float               
   propertyType        String
   propertyNumber      Int
   numBedroom          Int
   numBathroom         Int
   description         String
+  numParkingSpots     Int                   
+  size                Int                   
   createdAt           DateTime              @default(now())
   userId              String
   user                User                  @relation(fields: [userId], references: [id])

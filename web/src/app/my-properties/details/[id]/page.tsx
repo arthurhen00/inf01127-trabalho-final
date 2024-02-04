@@ -8,21 +8,26 @@ import { GetServerSidePropsContext } from "next";
 import { cookies } from "next/headers";
 
 interface Property {
-  id: string
-  name: string
-  zipcode: string
-  state: string
-  city: string
-  address: string
-  price: number
+  id: string,
+  name: string,
+  zipcode: string,
+  state: string,
+  city: string,
+  district: string,
+  address: string,
+  price: number,
   propertyType: string,
   propertyNumber: number,
   numBedroom: number,
   numBathroom: number,
-  description: string
-  createdAt: string
-  userId: string
+  numParkingSpots: number,
+  size: number,
+  description: string,
+  createdAt: string,
+  userId: string,
+  adType: string
 }
+
 
 interface Image {
   imageUrl: string
@@ -92,16 +97,28 @@ export default async function PropertyDetails(context: GetServerSidePropsContext
               <span>{property.propertiesData.state}</span>
             </div>
             <div className="mb-2">
+              <span className="text-base font-bold">Bairro: </span>
+              <span>{property.propertiesData.district}</span>
+            </div>
+            <div className="mb-2">
               <span className="text-base font-bold">Cidade: </span>
               <span>{property.propertiesData.city}</span>
             </div>
             <div className="mb-2">
               <span className="text-base font-bold">Endereço: </span>
-              <span>{property.propertiesData.address}</span>
+              <span>{property.propertiesData.address} - n° {property.propertiesData.propertyNumber}</span>
+            </div>
+            <div className="mb-2">
+              <span className="text-base font-bold">Tamanho: </span>
+              <span>{property.propertiesData.size} m²</span>
+            </div>
+            <div className="mb-2">
+              <span className="text-base font-bold">Tipo do anúncio: </span>
+              <span>{property.propertiesData.adType === 'sale' ? <span>Venda  </span> : <span>Aluguel</span>}</span>
             </div>
             <div className="mb-2">
               <span className="text-base font-bold">Valor: </span>
-              <span>{property.propertiesData.price}</span>
+              <span>R$ {(property.propertiesData.price).toLocaleString('pt-BR',{minimumFractionDigits: 2})}</span>
             </div>
             <div className="mb-2">
               <span className="text-base font-bold">Descrição: </span>
@@ -114,6 +131,7 @@ export default async function PropertyDetails(context: GetServerSidePropsContext
               :
                 <span>Apartamento</span> }
             </div>
+            
             <div className="mb-2">
               <span className="text-base font-bold">Número: </span>
               <span>{property.propertiesData.propertyNumber}</span>
@@ -125,6 +143,10 @@ export default async function PropertyDetails(context: GetServerSidePropsContext
             <div className="mb-2">
               <span className="text-base font-bold">Quantidade de banheiros: </span>
               <span>{property.propertiesData.numBathroom}</span>
+            </div>
+            <div className="mb-2">
+              <span className="text-base font-bold">Quantidade de vagas na garagem: </span>
+              <span>{property.propertiesData.numParkingSpots}</span>
             </div>
           </div>
 

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation"
 import { Camera } from 'lucide-react';
-import { ChangeEvent, FocusEventHandler, FormEvent, useState } from 'react';
+import { ChangeEvent, FocusEventHandler, FormEvent, useEffect, useState } from 'react';
 import { FaRegEnvelope } from 'react-icons/fa';
 import {toast} from 'react-toastify'
 import Cookie from 'js-cookie'
@@ -16,12 +16,14 @@ export default function AddPropertyForm () {
     const router = useRouter()
 
     const [previews, setPreviews] = useState<string[]>([]);
+    const [showParkingSpaces , setShowParkingSpaces] = useState(false);
 
     function validateForm(formData: FormData){
         const name = formData.get('name')
         const cep = formData.get('cep')
         const state = formData.get('state')
         const city = formData.get('city')
+        const district = formData.get('district')
         const address = formData.get('address')
         const price = formData.get('price')
         const description = formData.get('description')
@@ -29,6 +31,9 @@ export default function AddPropertyForm () {
         const propertyNumber = formData.get('property-number')
         const numBedroom = formData.get('bedrooms')
         const numBathroom = formData.get('bathrooms')
+        const hasParkingSpaces = formData.get('has-parking-space')
+        const parkingSpacesQtd = formData.get('parking-space-qtd')
+        const size = formData.get('square-meters')
 
         let valid = true
         if (!name || name.toString().trim().length === 0) {
@@ -44,7 +49,7 @@ export default function AddPropertyForm () {
             valid = false
         }
         if (!propertyNumber || propertyNumber.toString().trim().length === 0) {
-            toast.error('É necessário adicionar o número da propriedade!');
+            toast.error('É necessário adicionar o número do imóvel!');
             valid = false
         }
         if (!numBedroom || numBedroom.toString().trim().length === 0) {
@@ -59,11 +64,41 @@ export default function AddPropertyForm () {
             toast.error('É necessário adicionar uma descrição!');
             valid = false
         }
+        
         if (!state || state.toString().trim().length === 0) {
-            toast.error('É necessário adicionar um CEP!');
+            toast.error('É necessário adicionar um estado!');
             valid = false
         }
-        
+
+        if (!district || district.toString().trim().length === 0) {
+            toast.error('É necessário adicionar um bairro!');
+            valid = false
+        }
+
+        if (!address || address.toString().trim().length === 0) {
+            toast.error('É necessário adicionar um endereço!');
+            valid = false
+        }
+
+        if (!city || city.toString().trim().length === 0) {
+            toast.error('É necessário adicionar uma cidade!');
+            valid = false
+        }
+
+
+
+        if (!size || size.toString().trim().length === 0 ) {
+            toast.error('É necessário adicionar o tamanho do imóvel!');
+            valid = false
+        }else if (parseInt(size.toString(),10) <= 0){
+            toast.error('O tamanho do imóvel deve ser maior que zero!');
+            valid = false
+        }
+  
+        if (hasParkingSpaces == 'yes' && (!parkingSpacesQtd || parseInt(parkingSpacesQtd.toString(),10) <= 0 )){
+            toast.error('A quantidade de vagas na garagem deve ser maior que zero');
+            valid = false
+        }
 
         if(previews.length === 0){
             toast.error('É necessário adicionar uma imagem!')
@@ -89,6 +124,7 @@ export default function AddPropertyForm () {
             name: formData.get('name'),
             cep: formData.get('cep'),
             state: formData.get('state'),
+            district: formData.get('district'),
             city: formData.get('city'),
             address: formData.get('address'),
             price: parseFloat(formData.get('price')?.toString() ?? '0'),
@@ -98,6 +134,8 @@ export default function AddPropertyForm () {
             numBedroom: parseInt(formData.get('bedrooms')?.toString() ?? '0'),
             numBathroom: parseInt(formData.get('bathrooms')?.toString() ?? '0'),
             adType: formData.get('ad-type'),
+            parkingSpacesQtd : parseInt(formData.get('parking-space-qtd')?.toString() ?? '0'),
+            size : parseInt(formData.get('square-meters')?.toString() ?? '0'),
         }, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -154,11 +192,13 @@ export default function AddPropertyForm () {
         const stateInput = document.querySelector<HTMLInputElement>('input[name="state"]')!
         const cityInput = document.querySelector<HTMLInputElement>('input[name="city"]')!
         const streetInput = document.querySelector<HTMLInputElement>('input[name="address"]')!
+        const districtInput = document.querySelector<HTMLInputElement>('input[name="district"]')!
 
         if (!cep) {
             stateInput.value = ''
             cityInput.value = ''
             streetInput.value = ''
+            districtInput.value = ''
             return
         }
 
@@ -168,11 +208,13 @@ export default function AddPropertyForm () {
                 stateInput.value = ''
                 cityInput.value = ''
                 streetInput.value = ''
+                districtInput.value = ''
                 Alert('CEP inválido!')
             } else {
                 stateInput.value = response.data.uf
                 cityInput.value = response.data.localidade
                 streetInput.value = response.data.logradouro
+                districtInput.value = response.data.bairro
             }
         } catch (erro) {
             console.log(erro)
@@ -182,6 +224,13 @@ export default function AddPropertyForm () {
             Alert('Erro ao obter informações do CEP.')
         }
     }
+
+
+    function handleHasGarageChange(event: React.ChangeEvent<HTMLSelectElement>) {
+        const value = event.target.value;
+        setShowParkingSpaces(value === 'yes');
+    }
+ 
 
     return  (
         <form onSubmit={handleProperty} id='property-form'>
@@ -222,6 +271,12 @@ export default function AddPropertyForm () {
                         <div className="bg-white w-64 p-2 flex items-center mb-3 rounded-xl">
                             <FaRegEnvelope className="text-gray-400 mr-2" />
                             <input type="text" name="city" placeholder="Cidade" className="outline-none text-sm flex-1 " tabIndex={-1}></input>
+                        </div>
+
+                        <label className="text-sm text-gray-600 mb-1 ml-2">Bairro</label>
+                        <div className="bg-white w-64 p-2 flex items-center mb-3 rounded-xl">
+                            <FaRegEnvelope className="text-gray-400 mr-2" />
+                            <input type="text" name="district" placeholder="Bairro" className="outline-none text-sm flex-1 " tabIndex={-1}></input>
                         </div>
 
                         <label className="text-sm text-gray-600 mb-1 ml-2">Endereço</label>
@@ -308,6 +363,45 @@ export default function AddPropertyForm () {
                                 <input type="radio" name="bathrooms" value="3" id="b3" />
                                 <span>3+</span>
                             </label>
+                        </div>
+
+                        <label htmlFor="has-parking-space" className="text-sm text-gray-600 mb-1 ml-2">Possui garagem</label>
+                        <div className="bg-white w-52 p-2 flex items-center mb-3 rounded-xl">
+                            <select 
+                                name="has-parking-space" id="has-parking-space" 
+                                className="bg-white outline-none text-sm flex-1"
+                                onChange={handleHasGarageChange}>
+                                <option value="no">Não</option>
+                                <option value="yes">Sim</option>
+                            </select>
+                        </div>
+
+                        <div id="parking-spaces-container" className={showParkingSpaces ? '' : 'hidden'}>
+                            <label htmlFor="parking-space-qtd" className="text-sm text-gray-600 mb-1 ml-2">Vagas na garagem</label>
+                            <div className="bg-white w-52 p-2 flex items-center mb-3 rounded-xl">
+                                <input 
+                                name="parking-space-qtd"
+                                id="parking-space-qtd"
+                                className="bg-white outline-none text-sm min-w-0"   
+                                placeholder="0" />
+                                
+                            </div>
+                        </div>
+
+                        <label htmlFor="square-meters" className="text-sm text-gray-600 mb-1 ml-2">Tamanho</label>
+                        <div className="bg-white w-52 p-2 flex items-center mb-3 rounded-xl">
+                            <IMaskInput
+                                mask="00000"
+                                name="square-meters"
+                                id="square-meters"
+                                placeholder="72"
+                                className="bg-white outline-none text-sm min-w-0"    
+        
+                            />
+                            <span >
+                                m² 
+                            </span>
+                            
                         </div>
 
                         <label htmlFor="ad-type" className="text-sm text-gray-600 mb-1 ml-2">Tipo de anúncio</label>

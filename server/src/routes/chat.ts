@@ -24,7 +24,7 @@ export async function chatRoutes(app: FastifyInstance) {
             const responseReceiver = await axios.put(
                 'https://api.chatengine.io/users/',
                 {username: receiverEmail, secret: receiverId, first_name: receiverEmail},
-                {headers: {'private-key': '3d071a68-fe96-41a4-b88d-4a8aa34c4504'}}
+                {headers: {'private-key': '861bf9d9-4015-4555-8370-5b6dbf3b4ef9'}}
             )
         } catch (e) {
             // TODO
@@ -35,7 +35,7 @@ export async function chatRoutes(app: FastifyInstance) {
             const responseRequester = await axios.put(
                 'https://api.chatengine.io/users/',
                 {username: requesterEmail, secret: requesterId, first_name: requesterEmail},
-                {headers: {'private-key': '3d071a68-fe96-41a4-b88d-4a8aa34c4504'}}
+                {headers: {'private-key': '861bf9d9-4015-4555-8370-5b6dbf3b4ef9'}}
             )
         } catch (e) {
             // TODO
@@ -47,7 +47,7 @@ export async function chatRoutes(app: FastifyInstance) {
                 'https://api.chatengine.io/chats/',
                 {usernames: [requesterEmail], title: chatName, is_direct_chat: true},
                 {headers: {
-                    'project-id': 'f04be4f9-1a7c-4608-b794-a0d3c3bc0682',
+                    'project-id': 'fdc9b408-5d6b-4438-8afc-3cb503659193',
                     'user-name': receiverEmail,
                     'user-secret': receiverId,
                 }}

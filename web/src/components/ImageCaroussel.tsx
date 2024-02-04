@@ -24,7 +24,7 @@ render() {
 					>
 		{images.map(({ imageUrl, imageId }, index) => (
 			<div key={index}>
-				<img src={imageUrl} alt={`image${index + 1}`} className='h-[340px] w-[520px] rounded-lg object-cover'/>
+				<img src={imageUrl} alt={`image${index + 1}`} className='h-[360px] w-[640px] rounded-lg object-cover'/>
 			</div>
 		))}
 		</Carousel>
