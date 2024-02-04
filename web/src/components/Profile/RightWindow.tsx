@@ -5,9 +5,7 @@ import ShowPurschasedProperties from './ShowPurchasedProperties'
 import ShowSoldProperties from './ShowSoldProperties'
 import { api } from '@/lib/api'
 import Cookie from 'js-cookie'
-import jsPDF from 'jspdf'
-import autoTable from 'jspdf-autotable'
-import dayjs from 'dayjs'
+import { SalesReport, PurchaseReport } from '../../utils/ContractGenerator';
 
 type RightStatus = 'sold' | 'purchased'
 
@@ -44,42 +42,14 @@ export default function RightWindow() {
         setSoldProperties(soldProperties)
     }
 
-    function createPDF(data : NegotiatedProperty[]) {
-        const doc = new jsPDF()
+    function SalesPDF(data : NegotiatedProperty[]) {
+        const SR = new SalesReport(data)
+        SR.GeneratePDF();
+    }
 
-        doc.text('Relatório de ', 10, 10);
-        //doc.text('Vendas', 10, 30);
-
-        let body : any = []
-        for (const item of data) {
-            const rowData = ['v',
-                             'c',
-                             item.propertyData.name, 
-                             dayjs(item.propertyData.createdAt).format('D[/]MM[/]YY'),
-                             'R$ ' + item.propertyData.price, 
-                             dayjs(item.propertyData.createdAt).format('D[/]MM[/]YY'),
-                             'R$ ' + item.contractData.price,
-                            ]
-            body.push(rowData)
-        }
-
-        console.log(body)
-        
-        autoTable(doc, {
-            head: [['Vendedor',
-                    'Comprador',
-                    'Anúncio', 
-                    'Data de criação', 
-                    'Valor do anúncio',
-                    'Data de venda',
-                    'Valor acordado',
-                ]],
-            body: body,
-        })
-
-        const pdfBlob = doc.output('blob');
-        const pdfUrl = URL.createObjectURL(pdfBlob);
-        window.open(pdfUrl, '_blank');
+    function PurchasePDF(data : NegotiatedProperty[]) {
+        const PR = new PurchaseReport(data)
+        PR.GeneratePDF();
     }
 
     return (
@@ -117,7 +87,7 @@ export default function RightWindow() {
                         <ShowPurschasedProperties data={purchasedProperties} />
                         <button 
                             className='self-end'
-                            onClick={() => {createPDF(purchasedProperties)}}
+                            onClick={() => {PurchasePDF(purchasedProperties)}}
                         >
                             Gerar relatorio de compra
                         </button>
@@ -127,7 +97,7 @@ export default function RightWindow() {
                         <ShowSoldProperties data={soldProperties}/>
                         <button 
                             className='self-end'
-                            onClick={() => {createPDF(soldProperties)}}
+                            onClick={() => {SalesPDF(soldProperties)}}
                         >
                             Gerar relatorio de venda
                         </button>

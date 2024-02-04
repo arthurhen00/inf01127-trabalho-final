@@ -122,6 +122,7 @@ export default async function MatchRequestPage() {
                                             </div>
                                         </div>
                                         <div className='flex self-end'>
+                                            <a href={`/my-properties/details/${match.propertyData.id}`} className='hover:text-gray-400 mr-4'>Detalhes</a>
                                             <a href={`/match-request/accept?id=${match.matchData.id}`} className='hover:text-gray-400'>Aceitar</a>
                                             <a href={`/match-request/reject?id=${match.matchData.id}`} className='ml-4 text-red-800 hover:text-red-600'>Recusar</a>
                                         </div>

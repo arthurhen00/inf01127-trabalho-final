@@ -52,9 +52,11 @@ export default async function PropertyDetails(context: GetServerSidePropsContext
 
   const propertiesData : Property = propertyResponse.data
 
+  /*
   if( propertiesData.userId != sub ) {
     return (<Unauthorized />)
   }
+  */
 
   const imageResponse = await api.get(`/images/${propertyId}`, {
     headers: {
