@@ -7,6 +7,8 @@ import { jwtDecode } from 'jwt-decode';
 import { IMaskInput } from 'react-imask';
 import { CiSearch } from "react-icons/ci";
 import axios from 'axios';
+import { toast, ToastContainer} from 'react-toastify';
+import Alert from '@/components/Alert';
 
 
 interface ImageInfo {
@@ -167,6 +169,22 @@ const Explorer: React.FC = () => {
   async function handleMatchRequest() {
     const token = Cookie.get('token')
 
+    const match = await api.get('/matchRequest/exist', {
+      params: {
+        receiverId: currentProperty.userId,
+        propertyId: currentProperty.id,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+
+    const matchExist = match.data
+
+    if(matchExist.length > 0){
+      Alert('Você já curtiu esse imóvel!');
+    }
+    else{
     const matchRequest = await api.post('/matchRequest', {
       receiverId: currentProperty.userId,
       propertyId: currentProperty.id,
@@ -175,12 +193,15 @@ const Explorer: React.FC = () => {
         Authorization: `Bearer ${token}`
       }
     })
-
     handleNextProperty(true)
   }
 
+  }
+
   return (
+
     <div className='flex flex-col items-center'>
+    <ToastContainer /> 
       {/** Filtro */}
       <form onSubmit={handlePropertiesFilter} className='bg-white flex p-2 rounded-full mb-4'>
         <div className='bg-white rounded-xl flex items-center mr-2 ml-2'>

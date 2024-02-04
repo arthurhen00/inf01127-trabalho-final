@@ -31,6 +31,7 @@ export async function matchRoutes(app: FastifyInstance) {
 
     // Lista os request de match de um usuario
     app.get('/matchRequest', async (request) => {
+        
         const matches = await prisma.match.findMany({
             where: {
                 receiverId: request.user.sub,
@@ -43,6 +44,25 @@ export async function matchRoutes(app: FastifyInstance) {
 
         return matches
     })
+
+    app.get('/matchRequest/exist', async (request,reply ) => {    
+            const paramsSchema = z.object({
+                receiverId: z.string(),
+                propertyId: z.string(),
+            })
+    
+            const { receiverId, propertyId } = paramsSchema.parse(request.query)
+    
+            const match = await prisma.match.findMany({
+                where: {
+                    requesterId: request.user.sub,
+                    receiverId,
+                    propertyId,
+                }
+            })
+            return match
+        })
+
 
     // Lista um request para match
     app.get('/matchRequest/:id', async (request) => {
