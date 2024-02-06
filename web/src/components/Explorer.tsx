@@ -374,6 +374,9 @@ const Explorer: React.FC = () => {
 
             <div className='flex flex-col text-sm items-start w-1/5 pl-4'>
               <div className="mb-2 text-lg">
+                <span>{currentProperty.name}</span>
+              </div>
+              <div className="mb-2 text-lg">
                 <span>{currentProperty.district}</span>
                 {', '}
                 <span>{currentProperty.city}</span>

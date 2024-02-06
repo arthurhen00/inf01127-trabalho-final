@@ -9,7 +9,7 @@ interface NegotiatedProperty {
     sellerData: User
 }
 
-abstract class ContractGenerator {
+abstract class ReportGenerator {
     protected template: NegotiatedProperty[];
 
     constructor(template : NegotiatedProperty[]) {
@@ -19,7 +19,7 @@ abstract class ContractGenerator {
     abstract GeneratePDF() : void 
 }
 
-export class SalesReport extends ContractGenerator{
+export class SalesReport extends ReportGenerator{
     GeneratePDF(): void {
         const doc = new jsPDF()
 
@@ -57,7 +57,7 @@ export class SalesReport extends ContractGenerator{
 
 }
 
-export class PurchaseReport extends ContractGenerator{
+export class PurchaseReport extends ReportGenerator{
     GeneratePDF(): void {
         const doc = new jsPDF()
 
