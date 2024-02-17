@@ -1,7 +1,7 @@
 # inf01127-trabalho-final  
 
 ## Server
-create the ./env file in the ./server directory with the following content
+create the .env file in the ./server directory with the following content
 ```
 DATABASE_URL="file:./dev.db"
 ```
@@ -22,5 +22,3 @@ cd web
 npm install
 npm run dev
 ```
-
-sa
